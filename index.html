@@ -17,17 +17,22 @@
       d3.queue()
       .defer(d3.csv, "June1Taxi.txt")
       .defer(d3.csv, "ManhattanInspect.txt")
-	  .defer(d3.json, "nyc.json")
+	    .defer(d3.json, "nyc.json")
       .await(function (error, rawTaxi, rawInspect, nyc) {
         
         console.log("Code in the call-back function is only executed when every data file loads.");
 		//rawTaxi.length
         for(var i=0;i<100;i++){//longitude is x value, latitude is y
-          longitude = parseFloat(rawTaxi[i].dropoff_longitude);
-          latitude = parseFloat(rawTaxi[i].dropoff_latitude);
+          dropLong = parseFloat(rawTaxi[i].dropoff_longitude);
+          dropLat = parseFloat(rawTaxi[i].dropoff_latitude);
           dropTime = (rawTaxi[i].dropoff_datetime);
 
-          taxiArray.push({ longitude: longitude, latitude: latitude, dropTime: dropTime });
+          pickLong = parseFloat(rawTaxi[i].pickup_longitude);
+          pickLat = parseFloat(rawTaxi[i].pickup_latitude);
+          fare = parseFloat(rawTaxi[i].payment_amount);
+
+
+          taxiArray.push({ dropLong: dropLong, dropLat: dropLat, dropTime: dropTime, pickLong: pickLong, pickLat: pickLat, fare: fare });
             }
 
         console.log(taxiArray);
@@ -65,8 +70,8 @@
 		
         var dots = svg.selectAll("circle").data(taxiArray);
         dots.enter().append("circle").attr("r", 2).style("fill", "blue")
-        .attr("cx", function(d) { console.log(projection([d.longitude,d.latitude])); return projection([d.longitude,d.latitude])[0];})
-        .attr("cy", function(d) { return projection([d.longitude,d.latitude])[1]; })
+        .attr("cx", function(d) { console.log(projection([d.dropLong,d.dropLat])); return projection([d.dropLong,d.dropLat])[0];})
+        .attr("cy", function(d) { return projection([d.dropLong,d.dropLat])[1]; })
 		.attr("transform", "translate(-200,200) rotate(-27)");
       });
 
