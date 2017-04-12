@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
+    <script>
+
+      taxiArray=[];
+      inspectionArray=[];
+
+      d3.queue()
+      .defer(d3.csv, "June1Taxi.txt")
+      .defer(d3.csv, "ManhattanInspect.txt")
+      .await(function (error, rawTaxi, rawInspect) {
+        
+        console.log("Code in the call-back function is only executed when every data file loads.");
+
+        for(var i=0;i<rawTaxi.length;i++){//longitude is x value, latitude is y
+          longitude = parseFloat(rawTaxi[i].dropoff_longitude);
+          latitude = parseFloat(rawTaxi[i].dropoff_latitude);
+          dropTime = (rawTaxi[i].dropoff_datetime);
+
+          taxiArray.push({ longitude: longitude, latitude: latitude, dropTime: dropTime });
+            }
+
+        console.log(taxiArray);
+
+        
+        for(var i=0;i<rawInspect.length;i++){//longitude is x value, latitude is y
+          longitude = parseFloat(rawInspect[i].Longitude);
+          latitude = parseFloat(rawInspect[i].Latitude);
+          businessName = (rawInspect[i].Business_Name);
+          inspectionResult = (rawInspect[i].Inspection_Result);
+          industry = (rawInspect[i].Industry);
+
+          inspectionArray.push({ longitude: longitude, latitude: latitude, businessName: businessName, inspectionResult: inspectionResult, industry: industry });
+            }
+
+        console.log(inspectionArray);
+
+
+      });
+
+      function distance(lat1, long1, lat2, long2){//returns distance in feet
+        latDiff=lat1-lat2;
+        latDiff=latDiff*364320 //364320=69 miles in feet, 1 degree of Lat is about 69 miles
+        longDiff=long1-long2;
+        longDiff=longDiff*279840 //279840=53 miles in feet, 1 degree of long is about 53 miles at 40 degrees north
+
+        return Math.sqrt(Math.pow(latDiff, 2)+ Math.pow(longDiff, 2));
+
+      }
+
+
+    </script>
+  </body>
+</html>
