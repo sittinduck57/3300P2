@@ -23,7 +23,8 @@
 	  .defer(d3.json, "nyc.json")
       .await(function (error, rawTaxi, rawInspect, nyc) {
         console.log("Code in the call-back function is only executed when every data file loads.");
-		//rawTaxi.length
+		
+        //rawTaxi.length
         for(var i=0;i<rawTaxi.length;i++){//longitude is x value, latitude is y
 		    dropLong = parseFloat(rawTaxi[i].dropoff_longitude);
 		    dropLat = parseFloat(rawTaxi[i].dropoff_latitude);
@@ -50,7 +51,7 @@
         console.log(taxiArray);
 
         //rawInspect.length
-        for(var i=0;i<100;i++){//longitude is x value, latitude is y
+        for(var i=0;i<rawInspect.length;i++){//longitude is x value, latitude is y
           longitude = parseFloat(rawInspect[i].Longitude);
           latitude = parseFloat(rawInspect[i].Latitude);
           businessName = (rawInspect[i].Business_Name);
@@ -58,7 +59,12 @@
           industry = (rawInspect[i].Industry);
 
           inspectionArray.push({ longitude: longitude, latitude: latitude, businessName: businessName, inspectionResult: inspectionResult, industry: industry });
-            }
+        }
+
+        inspectionArray.sort(function(a,b){
+          if(a.latitude < b.latitude){return -1;}
+          else{return 1;}
+        });
 
         console.log(inspectionArray);
 		
@@ -98,6 +104,28 @@
         longDiff=longDiff*279840 //279840=53 miles in feet, 1 degree of long is about 53 miles at 40 degrees north
 
         return Math.sqrt(Math.pow(latDiff, 2)+ Math.pow(longDiff, 2));
+      }
+
+      function taxiToInspect(taxi, maxDist){//returns closest business from inspectionArray to a taxi dropoff, or -1 if above max dist
+        dropLat=taxi.dropLat;
+        dropLong=taxi.dropLong;
+
+        closestIndex=-1;
+        dist=1000000000;
+        for(i=0;i<inspectionArray.length;i++){
+          //console.log("dist= "+dist);
+          //console.log(distance(taxi.dropLat, taxi.dropLong, inspectionArray[i].latitude, inspectionArray[i].longitude));
+          if(distance(taxi.dropLat, taxi.dropLong, inspectionArray[i].latitude, inspectionArray[i].longitude)<dist){
+            closestIndex=i;
+            dist=distance(taxi.dropLat, taxi.dropLong, inspectionArray[i].latitude, inspectionArray[i].longitude);
+          }
+        }
+        if (closestIndex <=maxDist){
+          return inspectionArray[closestIndex];
+        }
+        else{
+          return -1;
+        }
       }
     </script>
   </body>
