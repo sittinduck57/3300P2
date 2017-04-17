@@ -2,6 +2,7 @@
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
 	<p id="p">
@@ -80,6 +81,17 @@
 		.attr("d", pathGenerator)
 		.attr("transform", "translate(-200,200) rotate(-27)")
 		.attr("fill","grey");
+
+		//Tooltip element for hover feature
+
+		var tooltip = d3.select("body")
+			.append("div")
+			.attr("id", "tooltip")
+			.style("position", "absolute")
+			.style("z-index", "10")
+			.style("visibility", "hidden")
+			.text("a tooltip");
+
 		
 		var slide = d3.select("#time");
 		slide.on("input", function(){
@@ -89,6 +101,9 @@
 			dots.enter().append("circle").attr("r", 3).style("fill", "blue")
 			.attr("cx", function(d) { return projection([d.dropLong,d.dropLat])[0];})
 			.attr("cy", function(d) { return projection([d.dropLong,d.dropLat])[1]; })
+			.on("mouseover", function(){return tooltip.style("visibility", "visible");})
+			.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px");})
+			.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
 			.attr("transform", "translate(-200,200) rotate(-27)");
 		});
       });
