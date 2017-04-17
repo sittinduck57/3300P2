@@ -13,60 +13,56 @@
 	<script src="https://d3js.org/d3-geo.v1.min.js"></script>
 	<script src="https://d3js.org/d3-geo-projection.v1.min.js"></script>
     <script>
- 	  var timeDict = {};
+	
+	
+   	var timeDict = {};
+	inspectionArray=[];
+	
+	var parseTaxi = function(row){
 		
-      taxiArray=[];
-      inspectionArray=[];
+	    dropLong = parseFloat(row.dropoff_longitude);
+	    dropLat = parseFloat(row.dropoff_latitude);
+	    dropTime = row.dropoff_datetime;
+	    pickLong = parseFloat(row.pickup_longitude);
+	    pickLat = parseFloat(row.pickup_latitude);
+	    fare = parseFloat(row.payment_amount);
+	  
+	  var obj = { dropLong: dropLong, dropLat: dropLat, dropTime: dropTime, pickLong: pickLong, pickLat: pickLat, fare: fare};
+      
+	  var time = dropTime.split(' ')[1];
+	  var slots =  time.split(':');
+	  var tot = parseInt(slots[0])*60 + parseInt(slots[1]);
+	  
+	  if (!(tot in timeDict)){
+		  timeDict[tot] = [obj];
+	  }else {
+		  timeDict[tot].push(obj);
+	  }
+	};
+	
+	var parseInspect = function(row){
+        longitude = parseFloat(row.Longitude);
+        latitude = parseFloat(row.Latitude);
+        businessName = row.Business_Name;
+        inspectionResult = row.Inspection_Result;
+        industry = row.Industry;
+
+        inspectionArray.push({ longitude: longitude, latitude: latitude, businessName: businessName, 
+			inspectionResult: inspectionResult, industry: industry });
+	};
+		
+      
       d3.queue()
-      .defer(d3.csv, "June1Taxi.txt")
-      .defer(d3.csv, "ManhattanInspect.txt")
+      .defer(d3.csv, "June1Taxi.txt", parseTaxi)
+      .defer(d3.csv, "ManhattanInspect.txt", parseInspect)
 	  .defer(d3.json, "nyc.json")
-      .await(function (error, rawTaxi, rawInspect, nyc) {
+      .await(function (error, taxi, inspect, nyc) {
         console.log("Code in the call-back function is only executed when every data file loads.");
-		
-        //rawTaxi.length
-        for(var i=0;i<rawTaxi.length;i++){//longitude is x value, latitude is y
-		    dropLong = parseFloat(rawTaxi[i].dropoff_longitude);
-		    dropLat = parseFloat(rawTaxi[i].dropoff_latitude);
-		    dropTime = (rawTaxi[i].dropoff_datetime);
-		    pickLong = parseFloat(rawTaxi[i].pickup_longitude);
-		    pickLat = parseFloat(rawTaxi[i].pickup_latitude);
-		    fare = parseFloat(rawTaxi[i].payment_amount);
-		  
-		  var obj = { dropLong: dropLong, dropLat: dropLat, dropTime: dropTime, pickLong: pickLong, pickLat: pickLat, fare: fare};
-          taxiArray.push(obj);
-          
-		  var time = dropTime.split(' ')[1];
-		  var slots =  time.split(':');
-		  var tot = parseInt(slots[0])*60 + parseInt(slots[1]);
-		  
-		  if (!(tot in timeDict)){
-			  timeDict[tot] = [obj];
-		  }else {
-			  timeDict[tot].push(obj);
-		  }
-	  	}
-			
-		console.log(timeDict);
-        console.log(taxiArray);
-
-        //rawInspect.length
-        for(var i=0;i<rawInspect.length;i++){//longitude is x value, latitude is y
-          longitude = parseFloat(rawInspect[i].Longitude);
-          latitude = parseFloat(rawInspect[i].Latitude);
-          businessName = (rawInspect[i].Business_Name);
-          inspectionResult = (rawInspect[i].Inspection_Result);
-          industry = (rawInspect[i].Industry);
-
-          inspectionArray.push({ longitude: longitude, latitude: latitude, businessName: businessName, inspectionResult: inspectionResult, industry: industry });
-        }
 
         inspectionArray.sort(function(a,b){
           if(a.latitude < b.latitude){return -1;}
           else{return 1;}
         });
-
-        console.log(inspectionArray);
 		
 		var svg = d3.select("#p").append("svg").attr("height",1100).attr("width",500);
 		
@@ -115,12 +111,14 @@
         for(i=0;i<inspectionArray.length;i++){
           //console.log("dist= "+dist);
           //console.log(distance(taxi.dropLat, taxi.dropLong, inspectionArray[i].latitude, inspectionArray[i].longitude));
-          if(distance(taxi.dropLat, taxi.dropLong, inspectionArray[i].latitude, inspectionArray[i].longitude)<dist){
+		  var val = distance(taxi.dropLat, taxi.dropLong, inspectionArray[i].latitude, inspectionArray[i].longitude);
+          if(val<dist){
             closestIndex=i;
-            dist=distance(taxi.dropLat, taxi.dropLong, inspectionArray[i].latitude, inspectionArray[i].longitude);
+            dist=val;
           }
         }
-        if (closestIndex <=maxDist){
+		
+        if (closestIndex <= maxDist){
           return inspectionArray[closestIndex];
         }
         else{
