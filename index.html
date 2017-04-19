@@ -8,11 +8,11 @@
   	<div class="filters" style="position:relative">
   		<label for="time">Time</label>
 		<input style="width: 300px;" type="range" id="time" min="0" value="0" max="1440" step="1"><br>
-		<input class="filter_button" name="dayChoice" id="0" value=0 type="radio">June 4, 2016 (Rainy Saturday)</input><br>
+		<input class="filter_button" name="dayChoice" id="0" value=0 type="radio" checked="checked">June 4, 2016 (Rainy Saturday)</input><br>
 		<input class="filter_button" name="dayChoice" id="1" value=1 type="radio">June 8, 2016 (Rainy Wednesday)</input><br>
 		<input class='filter_button' name="dayChoice" id='2' value=2 type='radio'>June 15, 2016 (Sunny Wednesday)</input><br>
 		<input class="filter_button" name="dayChoice" id="3" value=3 type="radio">June 18, 2016 (Sunny Saturday)</input><br>
-		<input class="filter_button" name="dayChoice" id="4" value=4 type="radio"checked="checked">All 4 Days</input><br>
+
 
 	</div>
 	<p id="p">
@@ -180,10 +180,13 @@
 				if (d.pt.getHours()==0){
 					hour=12;
 				}
-				else if(d.pt.getHours() > 12){
-					hour = d.pt.getHours() - 12;
-					if (d.pt.getHours()>11){
-						timeHalf="pm";
+				else if(d.pt.getHours() > 11){
+					timeHalf="pm";
+
+					if (d.pt.getHours() > 12){
+						hour = d.pt.getHours() - 12;
+					} else {
+						hour=12;
 					}
 				} else{
 					hour = d.pt.getHours();
