@@ -27,10 +27,11 @@
 	    dropTime = row.dropoff_datetime;
 	    pickLong = parseFloat(row.pickup_longitude);
 	    pickLat = parseFloat(row.pickup_latitude);
+	    pickTime = row.pickup_datetime;
 	    fare = parseFloat(row.payment_amount);
 	    dist = parseFloat(row.trip_distance);
 	  
-	  var obj = { dropLong: dropLong, dropLat: dropLat, dropTime: dropTime, pickLong: pickLong, pickLat: pickLat, fare: fare, dist: dist};
+	  var obj = { dropLong: dropLong, dropLat: dropLat, dropTime: dropTime, pickLong: pickLong, pickLat: pickLat, pickTime: pickTime, fare: fare, dist: dist};
       
 	  var time = dropTime.split(' ')[1];
 	  var slots =  time.split(':');
@@ -64,6 +65,8 @@
       .defer(d3.csv, "WeatherData.csv", parseWeather)
       .await(function (error, nyc, taxi5, taxi8, taxi12, taxi15, weather) {
         console.log("Code in the call-back function is only executed when every data file loads.");
+
+        console.log(error);
 
 		var svg = d3.select("#p").append("svg").attr("height",1100).attr("width",1000);
 		
@@ -104,7 +107,6 @@
 		slide.on("input", function(){
 			t = this.value;
 			dropDots(t);
-			pickDots(t);
 
 		});
 
@@ -113,80 +115,55 @@
 			dropDots.exit().remove();
 			dropDots.enter().append("circle").attr("class", "dropoffs").attr("r", 3).style("fill", "blue")
 			.attr("cx", function(d) { 
-				if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443)){
+				if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443) &&  (d.dropLat < -76.50437318*d.dropLong-5615.435765) && (d.pickLat > 1.895121486*d.pickLong+180.9002959) && (d.pickLat > .0550037105*d.pickLong+44.77000868) && (d.pickLat < -76.50437318*d.pickLong-5615.435765) && (d.pickLat < 1.547301526*d.pickLong+155.2683443)){
 					return projection([d.dropLong,d.dropLat])[0];
 				}
 			})
 			.attr("cy", function(d) { 
-				if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443)){
+				if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443) &&  (d.dropLat < -76.50437318*d.dropLong-5615.435765) && (d.pickLat > 1.895121486*d.pickLong+180.9002959) && (d.pickLat > .0550037105*d.pickLong+44.77000868) && (d.pickLat < -76.50437318*d.pickLong-5615.435765) && (d.pickLat < 1.547301526*d.pickLong+155.2683443)){
 					return projection([d.dropLong,d.dropLat])[1];
 				}
 			})
-			.on("mouseover", function(d){return tooltip.style("visibility", "visible").text("Distance: " + d.dist +"\nFare: " + d.fare);})
+			.on("mouseover", function(d){return tooltip.style("visibility", "visible").text("Time: " + d.pickTime + "\nDistance: " + d.dist +"\nFare: " + d.fare + "\npickLat: " + d.pickLat + "\npickLong: " + d.pickLong + "\ndropLat: " + d.dropLat + "\ndropLong: " + d.dropLong); })
 			.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px");})
-			.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
+			.on("mouseout", function(){return  tooltip.style("visibility", "hidden"); })
 			.attr("transform", "translate(0,200) rotate(-27)");
-		}
 
-
-
-		
-
-		function pickDots(t){
 			var pickDots = svg.selectAll(".pickups").data(timeDict[t]);
 			pickDots.exit().remove();
 			pickDots.enter().append("circle").attr("class", "pickups").attr("r", 3).style("fill", "red")
 			.attr("cx", function(d) { 
-				if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443)){
+				if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443) && (d.dropLat < -76.50437318*d.dropLong-5615.435765) && (d.pickLat > 1.895121486*d.pickLong+180.9002959) && (d.pickLat > .0550037105*d.pickLong+44.77000868) &&  (d.pickLat < -76.50437318*d.pickLong-5615.435765) && (d.pickLat < 1.547301526*d.pickLong+155.2683443)){
 					return projection([d.pickLong,d.pickLat])[0];
 				}
 			})
 			.attr("cy", function(d) { 
-				if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443)){
+				if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443) &&  (d.dropLat < -76.50437318*d.dropLong-5615.435765) && (d.pickLat > 1.895121486*d.pickLong+180.9002959) && (d.pickLat > .0550037105*d.pickLong+44.77000868) && (d.pickLat < -76.50437318*d.pickLong-5615.435765) && (d.pickLat < 1.547301526*d.pickLong+155.2683443)){
 					return projection([d.pickLong,d.pickLat])[1];
 				}
 			})
-			.on("mouseover", function(d){return tooltip.style("visibility", "visible").text("Distance: " + d.dist +"\nFare: " + d.fare);})
+			.on("mouseover", function(d){return tooltip.style("visibility", "visible").text("Time: " + d.pickTime + "\nDistance: " + d.dist +"\nFare: " + d.fare + "\npickLat: " + d.pickLat + "\npickLong: " + d.pickLong + "\ndropLat: " + d.dropLat + "\ndropLong: " + d.dropLong);})
 			.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px");})
 			.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
 			.attr("transform", "translate(-600,200) rotate(-27)");
 		}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       });
 
-      function distance(lat1, long1, lat2, long2){//returns distance in feet
-        latDiff=lat1-lat2;
-        latDiff=latDiff*364320 //364320=69 miles in feet, 1 degree of Lat is about 69 miles
-        longDiff=long1-long2;
-        longDiff=longDiff*279840 //279840=53 miles in feet, 1 degree of long is about 53 miles at 40 degrees north
-
-        return Math.sqrt(Math.pow(latDiff, 2)+ Math.pow(longDiff, 2));
-      }
-
-      function taxiToInspect(taxi, maxDist){//returns closest business from inspectionArray to a taxi dropoff, or -1 if above max dist
-        dropLat=taxi.dropLat;
-        dropLong=taxi.dropLong;
-
-        closestIndex=-1;
-        dist=1000000000;
-        for(i=0;i<inspectionArray.length;i++){
-          //console.log("dist= "+dist);
-          //console.log(distance(taxi.dropLat, taxi.dropLong, inspectionArray[i].latitude, inspectionArray[i].longitude));
-		  var val = distance(taxi.dropLat, taxi.dropLong, inspectionArray[i].latitude, inspectionArray[i].longitude);
-          if(val<dist){
-            closestIndex=i;
-            dist=val;
-          }
-        }
-		
-        if (closestIndex <= maxDist){
-          return inspectionArray[closestIndex];
-        }
-        else{
-          return -1;
-        }
-      }
+      
     </script>
   </body>
 </html>
