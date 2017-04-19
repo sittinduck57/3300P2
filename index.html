@@ -37,12 +37,12 @@
 	    pickLong = parseFloat(row.pickup_longitude);
 	    pickLat = parseFloat(row.pickup_latitude);
 	    pickTime = row.pickup_datetime;
-	    dt = new Date(pickTime);
+	    pt = new Date(pickTime);
 	    fare = parseFloat(row.payment_amount);
 	    dist = parseFloat(row.trip_distance);
 	    //console.log(new Date(dropTime));
 	  
-	  var obj = { dropLong: dropLong, dropLat: dropLat, dropTime: dropTime, pickLong: pickLong, pickLat: pickLat, pickTime: pickTime, fare: fare, dist: dist};
+	  var obj = { dropLong: dropLong, dropLat: dropLat, dropTime: dropTime, dt:dt, pickLong: pickLong, pickLat: pickLat, pickTime: pickTime, pt:pt, fare: fare, dist: dist};
       
 	  var time = pickTime.split(' ')[1];
 	  var slots =  time.split(':');
@@ -117,15 +117,28 @@
 		var slide = d3.select("#time");
 		slide.on("input", function(){
 			t = this.value;
-			console.log(getCheckedButton("filter_button"));
-			dropDots(t);
+			dropDots(t, getCheckedButton("filter_button")[0]);
 
 		});
 
 		
 
-		function dropDots(t){
-	     	var dropDots = svg.selectAll(".dropoffs").data(timeDict[t]);
+		function dropDots(t, day){
+			var data = timeDict[t]; 
+			if (day == 0){
+				data = timeDict[t].filter(function(d){return d.pt.getDate()==5});
+			}
+			else if (day == 1){
+				data = timeDict[t].filter(function(d){return d.pt.getDate()==8});
+			}
+			else if (day == 2){
+				data = timeDict[t].filter(function(d){return d.pt.getDate()==12});
+			}
+			else if (day == 3){
+				data = timeDict[t].filter(function(d){return d.pt.getDate()==15});
+			}
+			
+	     	var dropDots = svg.selectAll(".dropoffs").data(data);
 			dropDots.exit().remove();
 			dropDots.enter().append("circle").attr("class", "dropoffs").attr("r", 3).style("fill", "blue")
 			.attr("cx", function(d) { 
@@ -143,7 +156,7 @@
 			.on("mouseout", function(){return  tooltip.style("visibility", "hidden"); })
 			.attr("transform", "translate(0,200) rotate(-27)");
 
-			var pickDots = svg.selectAll(".pickups").data(timeDict[t]);
+			var pickDots = svg.selectAll(".pickups").data(data);
 			pickDots.exit().remove();
 			pickDots.enter().append("circle").attr("class", "pickups").attr("r", 3).style("fill", "red")
 			.attr("cx", function(d) { 
