@@ -18,6 +18,10 @@
 	
 	
    	var timeDict = {};
+   	var timeDict5 = {};
+   	var timeDict8 = {};
+   	var timeDict12 = {};
+   	var timeDict15 = {};
 	weatherArray=[];	
 	
 	var parseTaxi = function(row){
@@ -33,9 +37,41 @@
 	  
 	  var obj = { dropLong: dropLong, dropLat: dropLat, dropTime: dropTime, pickLong: pickLong, pickLat: pickLat, pickTime: pickTime, fare: fare, dist: dist};
       
-	  var time = dropTime.split(' ')[1];
+      var day = pickTime.split(' ')[0];
+	  var time = pickTime.split(' ')[1];
 	  var slots =  time.split(':');
 	  var tot = parseInt(slots[0])*60 + parseInt(slots[1]);
+
+	  switch (day){
+	  	case "2016-06-05":
+	  		if (!(tot in timeDict5)){
+		  		timeDict5[tot] = [obj];
+	  		}else {
+		  		timeDict5[tot].push(obj);
+	  		}
+	  		break;
+	  	case "2016-06-08":
+	  		if (!(tot in timeDict8)){
+		  		timeDict8[tot] = [obj];
+	  		}else {
+		  		timeDict8[tot].push(obj);
+	  		}
+	  		break;
+	  	case "2016-06-12":
+	  		if (!(tot in timeDict12)){
+		  		timeDict12[tot] = [obj];
+	  		}else {
+		  		timeDict12[tot].push(obj);
+	  		}
+	  		break;
+	  	case "2016-06-15":
+	  		if (!(tot in timeDict15)){
+		  		timeDict15[tot] = [obj];
+	  		}else {
+		  		timeDict15[tot].push(obj);
+	  		}
+	  		break;
+	  }
 	  
 	  if (!(tot in timeDict)){
 		  timeDict[tot] = [obj];
@@ -68,7 +104,7 @@
 
         console.log(error);
 
-		var svg = d3.select("#p").append("svg").attr("height",1100).attr("width",1000);
+		var svg = d3.select("#p").append("svg").attr("height",1100).attr("width",500);
 		
 		var projection = d3.geoMercator().center([-73.94, 40.70])
 				.scale(200000);
@@ -82,15 +118,9 @@
 		.data(nyc.features)
 		.enter().append("path")
 		.attr("d", pathGenerator)
-		.attr("transform", "translate(-600,200) rotate(-27)")
+		.attr("transform", "translate(-200,200) rotate(-27)")
 		.attr("fill","grey");
 
-		p.selectAll(".state")
-		.data(nyc.features)
-		.enter().append("path")
-		.attr("d", pathGenerator)
-		.attr("transform", "translate(0,200) rotate(-27)")
-		.attr("fill","grey");
 
 		//Tooltip element for hover feature
 
@@ -106,12 +136,12 @@
 		var slide = d3.select("#time");
 		slide.on("input", function(){
 			t = this.value;
-			dropDots(t);
+			pickDots(t);
 
 		});
 
-		function dropDots(t){
-	     	var dropDots = svg.selectAll(".dropoffs").data(timeDict[t]);
+		function pickDots(t){
+	    /* 	var dropDots = svg.selectAll(".dropoffs").data(timeDict[t]);
 			dropDots.exit().remove();
 			dropDots.enter().append("circle").attr("class", "dropoffs").attr("r", 3).style("fill", "blue")
 			.attr("cx", function(d) { 
@@ -127,7 +157,7 @@
 			.on("mouseover", function(d){return tooltip.style("visibility", "visible").text("Time: " + d.pickTime + "\nDistance: " + d.dist +"\nFare: " + d.fare + "\npickLat: " + d.pickLat + "\npickLong: " + d.pickLong + "\ndropLat: " + d.dropLat + "\ndropLong: " + d.dropLong); })
 			.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px");})
 			.on("mouseout", function(){return  tooltip.style("visibility", "hidden"); })
-			.attr("transform", "translate(0,200) rotate(-27)");
+			.attr("transform", "translate(0,200) rotate(-27)");*/
 
 			var pickDots = svg.selectAll(".pickups").data(timeDict[t]);
 			pickDots.exit().remove();
@@ -145,7 +175,7 @@
 			.on("mouseover", function(d){return tooltip.style("visibility", "visible").text("Time: " + d.pickTime + "\nDistance: " + d.dist +"\nFare: " + d.fare + "\npickLat: " + d.pickLat + "\npickLong: " + d.pickLong + "\ndropLat: " + d.dropLat + "\ndropLong: " + d.dropLong);})
 			.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px");})
 			.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
-			.attr("transform", "translate(-600,200) rotate(-27)");
+			.attr("transform", "translate(-200,200) rotate(-27)");
 		}
 
 
