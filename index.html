@@ -121,55 +121,29 @@
 		.attr("x", 310)
 		.attr("y", 100)
 		.style("font-size", "14pt")
-		.text("sdjkfbdsjkfhsdjk");
+		.text("Use the Slider!");
 
 		svg.append("text")
 		.attr("id", "dateAndTime2")
 		.attr("x", 310)
 		.attr("y", 120)
 		.style("font-size", "14pt")
-		.text("yuiuyiuy");
+		.text("");
 
 		svg.append("text")
 		.attr("id", "dateAndTime3")
 		.attr("x", 310)
 		.attr("y", 140)
 		.style("font-size", "14pt")
-		.text("zxvxcv");
+		.text("");
 		
 		var slide = d3.select("#time");
 		slide.on("input", function(){
 			t = this.value;
 			dropDots(t, getCheckedButton("filter_button")[0]);
 
-			
-
-			//textTime(t, getCheckedButton("filter_button")[0]);
 		});
 
-		function textTime(t, day){
-			var data = timeDict[t]; 
-			if (day == 0){
-				data = timeDict[t].filter(function(d){return d.pt.getDate()==4});
-			}
-			else if (day == 1){
-				data = timeDict[t].filter(function(d){return d.pt.getDate()==8});
-			}
-			else if (day == 2){
-				data = timeDict[t].filter(function(d){return d.pt.getDate()==15});
-			}
-			else if (day == 3){
-				data = timeDict[t].filter(function(d){return d.pt.getDate()==18});
-			}
-
-		//	return timeAndDateText.text(d.pt.getDay() + " the " + d.pt.getDate() +"th of June, 2016. " + d.pt.getHours() + ":" + d.pt.getMinutes());
-
-			var textTime = d3.select("#daytime").data(data);
-			textTime.exit().remove();
-			textTime.enter().append("div").attr("id", "daytime").text( function(d){
-				return d.pt.getDay() + " the " + d.pt.getDate() +"th of June, 2016. " + "\n" + d.pt.getHours() + ":" + d.pt.getMinutes();
-			});
-		}
 
 		
 
@@ -192,7 +166,7 @@
 
 			timeText=svg.select("#dateAndTime1").data(data).text(function(d){
 				var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-				return days[d.pt.getDay()] + ", " + "th";
+				return days[d.pt.getDay()] + ", ";
 			});
 
 			timeText=svg.select("#dateAndTime2").data(data).text(function(d){
@@ -207,8 +181,10 @@
 					hour=12;
 				}
 				else if(d.pt.getHours() > 12){
-					hour = d.pt.getHours() -12;
-					timeHalf="pm";
+					hour = d.pt.getHours() - 12;
+					if (d.pt.getHours()>11){
+						timeHalf="pm";
+					}
 				} else{
 					hour = d.pt.getHours();
 				}
