@@ -163,7 +163,7 @@
 			.on("mouseover", function(d){return tooltip.style("visibility", "visible").text("Time: " + d.pickTime + "\nDistance: " + d.dist +"\nFare: " + d.fare + "\npickLat: " + d.pickLat + "\npickLong: " + d.pickLong + "\ndropLat: " + d.dropLat + "\ndropLong: " + d.dropLong); })
 			.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px");})
 			.on("mouseout", function(){return  tooltip.style("visibility", "hidden"); })
-			.attr("transform", "translate(0,200) rotate(-27)");*/
+			.attr("transform", "translate(0,200) rotate(-27)");
 
 			var pickDots = svg.selectAll(".pickups").data(data);
 			pickDots.exit().remove();
