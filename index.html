@@ -176,7 +176,7 @@
 
 			timeText=svg.select("#dateAndTime3").data(data).text(function(d){
 				var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-				var hour; var timeHalf="am"
+				var hour; var minutes; var timeHalf="am"
 				if (d.pt.getHours()==0){
 					hour=12;
 				}
@@ -191,7 +191,13 @@
 				} else{
 					hour = d.pt.getHours();
 				}
-				return hour + ":" + d.pt.getMinutes() + timeHalf;
+
+				if (d.pt.getMinutes()<10){
+					minutes="0"+d.pt.getMinutes();
+				}else{
+					minutes=d.pt.getMinutes();
+				}
+				return hour + ":" + minutes + timeHalf;
 			});
 
 
