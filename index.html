@@ -8,10 +8,10 @@
   	<div class="filters" style="position:relative">
   		<label for="time">Time</label>
 		<input style="width: 300px;" type="range" id="time" min="0" value="0" max="1440" step="1"><br>
-		<input class="filter_button" name="dayChoice" id="0" value=0 type="radio" checked="checked">June 4, 2016 (Rainy Saturday)</input><br>
-		<input class="filter_button" name="dayChoice" id="1" value=1 type="radio">June 8, 2016 (Rainy Wednesday)</input><br>
-		<input class='filter_button' name="dayChoice" id='2' value=2 type='radio'>June 15, 2016 (Sunny Wednesday)</input><br>
-		<input class="filter_button" name="dayChoice" id="3" value=3 type="radio">June 18, 2016 (Sunny Saturday)</input><br>
+		<input class="filter_button" name="dayChoice" id="z" value=0 type="radio" checked="checked">June 4, 2016 (Rainy Saturday)</input><br>
+		<input class="filter_button" name="dayChoice" id="o" value=1 type="radio">June 8, 2016 (Rainy Wednesday)</input><br>
+		<input class='filter_button' name="dayChoice" id='t' value=2 type='radio'>June 15, 2016 (Sunny Wednesday)</input><br>
+		<input class="filter_button" name="dayChoice" id="th" value=3 type="radio">June 18, 2016 (Sunny Saturday)</input><br>
 
 
 	</div>
@@ -144,8 +144,24 @@
 
 		});
 
-
+		var check1 = d3.select("#z");
+		check1.on("change", function(){
+			dropDots(t, getCheckedButton("filter_button")[0]);
+		});
 		
+		var check2 = d3.select("#o");
+		check2.on("change", function(){
+			dropDots(t, getCheckedButton("filter_button")[0]);
+		});
+		var check3 = d3.select("#t");
+		check3.on("change", function(){
+			dropDots(t, getCheckedButton("filter_button")[0]);
+		});
+		
+		var check4 = d3.select("#th");
+		check4.on("change", function(){
+			dropDots(t, getCheckedButton("filter_button")[0]);
+		});
 
 		function dropDots(t, day){
 			var data = timeDict[t]; 
@@ -305,7 +321,6 @@
 	//Returns the checked radio button
 	function getCheckedButton (chkboxName) {
 	  var checkboxes = document.getElementsByClassName(chkboxName);
-	  console
 	  var checkboxesChecked = [];
 	  // loop over them all
 	  for (var i=0; i<checkboxes.length; i++) {
