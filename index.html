@@ -26,10 +26,6 @@
 	
 	
    	var timeDict = {};
-   	var timeDict5 = {};
-   	var timeDict8 = {};
-   	var timeDict12 = {};
-   	var timeDict15 = {};
 	weatherArray=[];	
 	
 	var parseTaxi = function(row){
@@ -49,40 +45,10 @@
 	  var obj = { dropLong: dropLong, dropLat: dropLat, dropTime: dropTime, dt:dt, pickLong: pickLong, pickLat: pickLat, pickTime: pickTime, pt:pt, fare: fare, dist: dist};
       
 
+
 	  var time = pickTime.split(' ')[1];
 	  var slots =  time.split(':');
 	  var tot = parseInt(slots[0])*60 + parseInt(slots[1]);
-
-	  switch (day){
-	  	case "2016-06-05":
-	  		if (!(tot in timeDict5)){
-		  		timeDict5[tot] = [obj];
-	  		}else {
-		  		timeDict5[tot].push(obj);
-	  		}
-	  		break;
-	  	case "2016-06-08":
-	  		if (!(tot in timeDict8)){
-		  		timeDict8[tot] = [obj];
-	  		}else {
-		  		timeDict8[tot].push(obj);
-	  		}
-	  		break;
-	  	case "2016-06-12":
-	  		if (!(tot in timeDict12)){
-		  		timeDict12[tot] = [obj];
-	  		}else {
-		  		timeDict12[tot].push(obj);
-	  		}
-	  		break;
-	  	case "2016-06-15":
-	  		if (!(tot in timeDict15)){
-		  		timeDict15[tot] = [obj];
-	  		}else {
-		  		timeDict15[tot].push(obj);
-	  		}
-	  		break;
-	  }
 	  
 	  if (!(tot in timeDict)){
 		  timeDict[tot] = [obj];
@@ -147,23 +113,27 @@
 		var slide = d3.select("#time");
 		slide.on("input", function(){
 			t = this.value;
+			dropDots(t, getCheckedButton("filter_button")[0]);
 
-			dropDots.exit().remove();
-			dropDots.enter().append("circle").attr("class", "dropoffs").attr("r", 3).style("fill", "blue")
-			.attr("cx", function(d) { 
-				if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443) &&  (d.dropLat < -76.50437318*d.dropLong-5615.435765) && (d.pickLat > 1.895121486*d.pickLong+180.9002959) && (d.pickLat > .0550037105*d.pickLong+44.77000868) && (d.pickLat < -76.50437318*d.pickLong-5615.435765) && (d.pickLat < 1.547301526*d.pickLong+155.2683443)){
-					return projection([d.dropLong,d.dropLat])[0];
-				}
-			})
-			.attr("cy", function(d) { 
-				if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443) &&  (d.dropLat < -76.50437318*d.dropLong-5615.435765) && (d.pickLat > 1.895121486*d.pickLong+180.9002959) && (d.pickLat > .0550037105*d.pickLong+44.77000868) && (d.pickLat < -76.50437318*d.pickLong-5615.435765) && (d.pickLat < 1.547301526*d.pickLong+155.2683443)){
-					return projection([d.dropLong,d.dropLat])[1];
-				}
-			})
-			.on("mouseover", function(d){return tooltip.style("visibility", "visible").text("Time: " + d.pickTime + "\nDistance: " + d.dist +"\nFare: " + d.fare + "\npickLat: " + d.pickLat + "\npickLong: " + d.pickLong + "\ndropLat: " + d.dropLat + "\ndropLong: " + d.dropLong); })
-			.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px");})
-			.on("mouseout", function(){return  tooltip.style("visibility", "hidden"); })
-			.attr("transform", "translate(0,200) rotate(-27)");
+		});
+
+		
+
+		function dropDots(t, day){
+			var data = timeDict[t]; 
+			if (day == 0){
+				data = timeDict[t].filter(function(d){return d.pt.getDate()==5});
+			}
+			else if (day == 1){
+				data = timeDict[t].filter(function(d){return d.pt.getDate()==8});
+			}
+			else if (day == 2){
+				data = timeDict[t].filter(function(d){return d.pt.getDate()==12});
+			}
+			else if (day == 3){
+				data = timeDict[t].filter(function(d){return d.pt.getDate()==15});
+			}
+			
 
 			var pickDots = svg.selectAll(".pickups").data(data);
 			pickDots.exit().remove();
@@ -182,7 +152,7 @@
 			.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px");})
 			.on("mouseout", function(){return tooltip.style("visibility", "hidden");})
 			.attr("transform", "translate(-200,200) rotate(-27)");
-		});
+		}
 
 
 		
@@ -215,25 +185,25 @@
 		var plot = svg.append("g").attr("transform", "translate(0,0)");
 		plot.append("g").call(xAxis).attr("transform", "translate(0," + (length-padding).toString()+ ")");
 		plot.append("g").call(yAxis).attr("transform", "translate(" + padding.toString() +",0)");
-		// var pathGenerator = d3.line()
-		// 	.x(function (d) { return x(d.Date); })
-		// 	.y(function (d) { return y(d.yfield); });
+		 var pathGenerator = d3.line()
+		 	.x(function (d) { return x(d.Date); })
+		 	.y(function (d) { return y(d.yfield); });
 
-		// var paths = plot.selectAll("path.lineGraph").data(data);
-		// paths.enter().append("path")
-		// 	.merge(paths)
-		// 	// .on("mouseover", function(d){ 
-		// 	// 	svg.select("#SectorName").text(d.key);
-		// 	// })
-		// 	.attr("class", "lineGraph")
-		// 	.transition().duration(1000)
-		// 	.attr("d", function(sector){ 
-		// 		return pathGenerator(sector.values);
-		// 	})
+		 var paths = plot.selectAll("path.lineGraph").data(data);
+		 paths.enter().append("path")
+		 	.merge(paths)
+		 	.on("mouseover", function(d){ 
+		 	svg.select("#SectorName").text(d.key);
+		 	 })
+		 	.attr("class", "lineGraph")
+		 	.transition().duration(1000)
+		 	.attr("d", function(sector){ 
+		 		return pathGenerator(sector.values);
+		 	})
 
-		// 	.style("stroke", function(sector, i){ 
-		// 		return "blue";
-		// 	})
+		 	.style("stroke", function(sector, i){ 
+		 		return "blue";
+		 	})
 
 		// Append Titles and Axis Labels
 		svg.append("text")
