@@ -361,15 +361,13 @@
 			nestedData[dates[j]] = element;
 
 		};
-
-		plotLineGraph("#p", nestedData, "numRides", "# of Rides" , "Number of Rides by Time of Day" );
-		plotLineGraph("#p", nestedData, "avgFare", "Average Fare" , "Average Fare Paid by Time of Day" );
-		plotLineGraph("#p", nestedData, "avgDist", "Average Distance" , "Average Distance Traveled by Time of Day" );
 		
-
-
-
-
+		d3.queue()
+		.defer(plotLineGraph, "#p", nestedData, "numRides", "# of Rides" , "Number of Rides by Time of Day")
+		.defer(plotLineGraph, "#p", nestedData, "avgFare", "Average Fare" , "Average Fare Paid by Time of Day" )
+		.defer(plotLineGraph, "#p", nestedData, "avgDist", "Average Distance" , "Average Distance Traveled by Time of Day")
+		.await(function (error, one, two, three) {});
+		
 	  });
 
 	function closest(num, arr){
@@ -384,7 +382,7 @@
 
 
 
-	function plotLineGraph(id, data, yfield, ylabel, title){	
+	function plotLineGraph(id, data, yfield, ylabel, title, callback){	
 		var colors = ["red", "blue", "green", "yellow"];
 		var timeExtent = [0,1440];
 		var yExtent;
@@ -415,7 +413,7 @@
 		for (var j = 0; j < dates.length; j++) {
 			day = data[dates[j]]
 			count = 0;
-        	for (var i = 0; i < day.length; i++) {
+        	//for (var i = 0; i < day.length; i++) {
 	        	var line = d3.line()
 	                //.curve(d3.curveCatmullRom.alpha(0.5))
 	                .x(function (d) { return x(d.minute); })
@@ -431,7 +429,7 @@
 	               .attr("d", line(day))
 	               .style("fill", 'none')
 	               .style("stroke", colors[j]);      
-	        };
+	        //};
 
 		};
 		svg.selectAll('.x.axis text')
@@ -454,11 +452,11 @@
 		svg.append("text")
 			.text(ylabel)
 			.attr("x", 5)
-			.attr("y", length/2)
-			.attr("text-anchor", "start")
+			.attr("y", length/2 - 20)
+			.attr("text-anchor", "middle")
 			.attr("font-family", "Palatino")
 			.attr("font-size", 12)
-			.attr("transform", "rotate(-85) translate(-400, -250)")
+			.attr("transform", "rotate(-90) translate(-200, -250)")
 			.attr("fill", "black");
 		
 		svg.append("text")
@@ -469,7 +467,8 @@
 			.attr("font-family", "Palatino")
 			.attr("font-size", 12)
 			.attr("fill", "black");
-
+	    
+		callback(null);
 
 
 	}
