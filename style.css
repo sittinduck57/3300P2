@@ -3,7 +3,7 @@
 }
 
 body{
-     background-color:#FFFFCC;
+     background-color:#ffe4b5;
 
 
 }
@@ -41,9 +41,8 @@ body{
 }
 
 #graph{
-    position: absolute;
+    float right;
     top:100px;
-    right: 100px;
     padding: 10px;
 
 }
