@@ -99,13 +99,14 @@
 
 	    console.log(error);
 
+	    var d = d3.select("#p").append("div").style('float','left');
 
-		var svg = d3.select("#p").append("svg").attr("height",1000).attr("width",500);
+		var svg = d.append("svg").attr("height",900).attr("width",450);
 		
 		var projection = d3.geoMercator().center([-73.94, 40.70])
 				.scale(200000);
 	    
-		projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], nyc);
+		projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height") - 20]], nyc);
 				
 		var pathGenerator = d3.geoPath().projection(projection);
 		var p = svg.append("g");
@@ -117,52 +118,61 @@
 		.attr("transform", "translate(-200,200) rotate(-27)")
 		.attr("fill","#5f9ea0");
 
-
-
 		var timeAndDateText=d3.select("#p")
 		.append("div")
 		.attr("id", "daytime")
 		.text("");
 
-		svg.append("text")
+		var svg2 = svg.append('svg')
+		.attr("x", 230)
+		.attr("y",25)
+		.attr("width",170)
+		.attr("height",140);
+		
+		svg2.append("rect")
+	    .attr("width", "100%")
+	    .attr("height", "100%")
+	    .attr("fill", "grey");
+
+		svg2.append("text")
 		.attr("id", "tiptool1")
-		.attr("x", 310)
-		.attr("y", 200)
-		.style("font-size", "14pt")
-		.text("");
-
-		svg.append("text")
-		.attr("id", "tiptool2")
-		.attr("x", 310)
-		.attr("y", 220)
-		.style("font-size", "14pt")
-		.text("");
-
-		svg.append("text")
-		.attr("id", "dateAndTime1")
-		.attr("x", 310)
+		.attr("x", 0)
 		.attr("y", 100)
 		.style("font-size", "14pt")
-		.text("Use the Slider!");
+		.text("");
 
-		svg.append("text")
-		.attr("id", "dateAndTime2")
-		.attr("x", 310)
+		svg2.append("text")
+		.attr("id", "tiptool2")
+		.attr("x", 0)
 		.attr("y", 120)
 		.style("font-size", "14pt")
 		.text("");
 
-		svg.append("text")
+		svg2.append("text")
+		.attr("id", "dateAndTime1")
+		.attr("x", 0)
+		.attr("y", 20)
+		.style("font-size", "14pt")
+		.text("Use the Slider!");
+
+		svg2.append("text")
+		.attr("id", "dateAndTime2")
+		.attr("x", 0)
+		.attr("y", 40)
+		.style("font-size", "14pt")
+		.text("");
+
+		svg2.append("text")
 		.attr("id", "dateAndTime3")
-		.attr("x", 310)
-		.attr("y", 140)
+		.attr("x", 0)
+		.attr("y", 60)
 		.style("font-size", "14pt")
 		.text("");
 
 		svg.append("svg:image")
 		.attr("id", "weatherImage")
-     	.attr('x',100)
-     	.attr('y',100)
+     	.attr('x',10)
+     	.attr('y',10)
      	.attr('width', 100)
      	.attr('height', 100)
      	.attr("xlink:href","cloudy.svg");
@@ -171,6 +181,10 @@
 		slide.on("input", function(){
 			t = this.value;
 			dropDots(t, getCheckedButton("filter_button")[0]);
+			d3.selectAll(".graphLine").style("visibility", "hidden");
+			d3.select("#numRides"+t.toString()).style("visibility", "visible");
+			d3.select("#avgFare"+t.toString()).style("visibility", "visible");
+			d3.select("#avgDist"+t.toString()).style("visibility", "visible");
 		});
 
 		var check1 = d3.select("#z");
@@ -215,17 +229,17 @@
 				weatherData = weatherDict[u].filter(function(d){return d.wt.getDate()==18});
 			}
 			
-			timeText=svg.select("#dateAndTime1").data(data).text(function(d){
+			timeText=svg2.select("#dateAndTime1").data(data).text(function(d){
 				var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 				return days[d.pt.getDay()] + ", ";
 			});
 
-			timeText=svg.select("#dateAndTime2").data(data).text(function(d){
+			timeText=svg2.select("#dateAndTime2").data(data).text(function(d){
 				var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 				return "June " + d.pt.getDate() + "th, 2016";
 			});
 
-			timeText=svg.select("#dateAndTime3").data(data).text(function(d){
+			timeText=svg2.select("#dateAndTime3").data(data).text(function(d){
 				var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 				var hour; var minutes; var timeHalf="am"
 				if (d.pt.getHours()==0){
@@ -312,16 +326,16 @@
 				d3.select("#pick"+id).style("opacity", 1);
 				d3.select("#drop"+id).style("visibility", "visible");
 				d3.select("#line"+id).style("visibility", "visible");
-				svg.select("#tiptool1").style("visibility", "visible").text("Trip Distance: " + d.dist +" mi");
-				svg.select("#tiptool2").style("visibility", "visible").text("Fare: $" + d.fare.toFixed(2));
+				svg2.select("#tiptool1").style("visibility", "visible").text("Trip Distance: " + d.dist +" mi");
+				svg2.select("#tiptool2").style("visibility", "visible").text("Fare: $" + d.fare.toFixed(2));
 			})
 			.on("mouseout", function(d){	
 				var id = d.id;
 				d3.select("#drop"+id).style("visibility", "hidden");
 				d3.selectAll(".linePath").style("visibility", "hidden");
 				d3.selectAll(".pickups").style("opacity", 1);
-				svg.select("#tiptool1").style("visibility", "hidden");
-				svg.select("#tiptool2").style("visibility", "hidden");})
+				svg2.select("#tiptool1").style("visibility", "hidden");
+				svg2.select("#tiptool2").style("visibility", "hidden");})
 			.attr("transform", "translate(-200,200) rotate(-27)");
 			
 			
@@ -353,7 +367,6 @@
 			
 		}
 
-
 		
 		var dates = [4,8,15,18];
 		var nestedData = {4: {}, 8: {}, 15: {}, 18: {}}; 
@@ -368,10 +381,12 @@
 
 		};
 		
+		var p2 = d3.select("#p").append("div").attr("id",'div1').style('float','left');
+
 		d3.queue()
-		.defer(plotLineGraph, "#p", nestedData, "numRides", "# of Rides" , "Number of Rides by Time of Day")
-		.defer(plotLineGraph, "#p", nestedData, "avgFare", "Average Fare (Dollars)" , "Average Fare Paid by Time of Day" )
-		.defer(plotLineGraph, "#p", nestedData, "avgDist", "Average Distance (Miles)" , "Average Distance Traveled by Time of Day")
+		.defer(plotLineGraph, "#div1", nestedData, "numRides", "# of Rides" , "Number of Rides by Time of Day")
+		.defer(plotLineGraph, "#div1", nestedData, "avgFare", "Average Fare (Dollars)" , "Average Fare Paid by Time of Day" )
+		.defer(plotLineGraph, "#div1", nestedData, "avgDist", "Average Distance (Miles)" , "Average Distance Traveled by Time of Day")
 		.await(function (error, one, two, three) {});
 
 		showLegend();
@@ -400,9 +415,11 @@
 		else if (yfield == "avgFare"){yExtent = [0,40];}
 		else if (yfield == "avgDist"){yExtent = [0,13];}
 					
-
-		var length = 600;
-		var svg =  d3.select(id).append("svg")
+		
+		var d =  d3.select(id).append("div")
+		
+		var length = 310;
+		var svg =  d.append("svg")
 			.attr("width", length)
 			.attr("height", length);
 		var padding = length/10;
@@ -438,9 +455,27 @@
 	               .attr("class", "line")
 	               .attr("d", line(day))
 	               .style("fill", 'none')
-	               .style("stroke", colors[j]);      
+	               .style("stroke", colors[j]);    
+
+
+	     var lines = svg.selectAll(".graphLine").data(day);
+			lines.enter().append("line").attr("class", "graphLine").style("stroke", "black").style("visibility", "hidden")
+			.attr("id", function(d){
+				var id = d.minute;
+				return yfield+id.toString();
+			})
+		    .attr("x1", function(d){
+				return x(d.minute);
+			})
+		    .attr("y1", 30)
+		    .attr("x2", function(d){
+				return x(d.minute);
+			})
+		    .attr("y2", length-padding);
+  
 
 		};
+
 		svg.selectAll('.xaxis text')
    			.text(function(d) { 
 		       d = d.toFixed();
@@ -448,33 +483,39 @@
 		       var minutes = pad((d % 60), 2);
 		       return hours + ":" + minutes;
 		   	});
+					
+	    svg.append("path")
+	    .attr("class", "line")
+	               .attr("d", line(day))
+	               .style("fill", 'none')
+	               .style("stroke", colors[j]);  
 		
 		svg.append("text")
 			.text(title)
-			.attr("x", length/2)
-			.attr("y", 50)
+			.attr("x", length/2 + 5)
+			.attr("y", 25)
 			.attr("text-anchor", "middle")
 			.attr("font-family", "Palatino")
-			.attr("font-size", 20)
+			.attr("font-size", 16)
 			.attr("fill", "black");
 
 		svg.append("text")
 			.text(ylabel)
 			.attr("x", 5)
-			.attr("y", length/2 - 20)
+			.attr("y", length - 50)
 			.attr("text-anchor", "middle")
 			.attr("font-family", "Palatino")
-			.attr("font-size", 16)
+			.attr("font-size", 14)
 			.attr("transform", "rotate(-90) translate(-200, -250)")
 			.attr("fill", "black");
 		
 		svg.append("text")
 			.text("Time in Minutes")
-			.attr("x", length/2)
-			.attr("y", length-10)
+			.attr("x", length/2 + 40)
+			.attr("y", length - 3)
 			.attr("text-anchor", "end")
 			.attr("font-family", "Palatino")
-			.attr("font-size", 16)
+			.attr("font-size", 14)
 			.attr("fill", "black");
 
 	    
@@ -488,8 +529,9 @@
 		var length = 600;
 		var svgB =  d3.select("#p").append("svg")
 			.attr("width", length)
-			.attr("height", length);
-		
+			.attr("height", length)
+			.attr("transform", "translate(0, -600)");
+
 		svgB.append("text")
             .attr("x", 150)
             .attr("y", 265)
