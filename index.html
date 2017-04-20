@@ -3,6 +3,7 @@
     <meta charset="utf-8">
     <title></title>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="shortcut icon" href="">
   </head>
   <body>
   	<div id="top">
@@ -10,7 +11,7 @@
   	</div>
   	<div id="input" class="filters" style="position:relative">
   		<label for="time">Time</label>
-		<input style="width: 300px;" type="range" id="time" min="0" value="0" max="1439" step="1"><br>
+		<input style="width: 300px;" type="range" id="time" min="0" value="0" max="1439" step="1" value="1"><br>
 		<input class="filter_button" name="dayChoice" id="z" value=0 type="radio" checked="checked">June 4, 2016 (Rainy Saturday)</input><br>
 		<input class="filter_button" name="dayChoice" id="o" value=1 type="radio">June 8, 2016 (Rainy Wednesday)</input><br>
 		<input class='filter_button' name="dayChoice" id='t' value=2 type='radio'>June 15, 2016 (Sunny Wednesday)</input><br>
@@ -113,7 +114,7 @@
 		.enter().append("path")
 		.attr("d", pathGenerator)
 		.attr("transform", "translate(-200,200) rotate(-27)")
-		.attr("fill","grey");
+		.attr("fill","#5f9ea0");
 
 
 		//Tooltip element for hover feature
