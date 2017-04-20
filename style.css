@@ -4,6 +4,7 @@
 
 body{
      background-color:#ffe4b5;
+     pointer-events:all;
 
 
 }
@@ -34,6 +35,10 @@ body{
     top:300px;
     float:left;
 
+}
+
+.pickups{
+    pointer-events:all;
 }
 
 #p{
