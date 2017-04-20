@@ -8,7 +8,7 @@
   	<div id="top">
   		<h1> Taxi Pickups in Manhattan</h1>
   	</div>
-  	<div class="filters" style="position:relative">
+  	<div id="input" class="filters" style="position:relative">
   		<label for="time">Time</label>
 		<input style="width: 300px;" type="range" id="time" min="0" value="0" max="1439" step="1"><br>
 		<input class="filter_button" name="dayChoice" id="z" value=0 type="radio" checked="checked">June 4, 2016 (Rainy Saturday)</input><br>
@@ -18,6 +18,7 @@
 	</div>
 	<p id="p">
 	</p>
+	<p id="graph"></p>
 	<script src="https://d3js.org/d3.v4.min.js"></script>
 	<script src="http://d3js.org/topojson.v2.min.js"></script>
 	<script src="https://d3js.org/d3-geo.v1.min.js"></script>
@@ -97,9 +98,9 @@
 	    console.log("Code in the call-back function is only executed when every data file loads.");
 
 	    console.log(error);
-	    console.log(weatherTimes);
 
-		var svg = d3.select("#p").append("svg").attr("height",1100).attr("width",500);
+
+		var svg = d3.select("#p").append("svg").attr("height",1000).attr("width",500);
 		
 		var projection = d3.geoMercator().center([-73.94, 40.70])
 				.scale(200000);
@@ -159,7 +160,8 @@
      	.attr('x',100)
      	.attr('y',100)
      	.attr('width', 100)
-     	.attr('height', 100);
+     	.attr('height', 100)
+     	.attr("xlink:href","cloudy.svg");
 		
 		var slide = d3.select("#time");
 		slide.on("input", function(){
@@ -192,7 +194,6 @@
 			var weatherData = weatherDict[t];
 
 			var u = closest(t, weatherTimes);
-			console.log(u);
 
 			if (day == 0){
 				data = timeDict[t].filter(function(d){return d.pt.getDate()==4});
@@ -211,7 +212,6 @@
 				weatherData = weatherDict[u].filter(function(d){return d.wt.getDate()==18});
 			}
 			
-			console.log(weatherData);
 
 
 			timeText=svg.select("#dateAndTime1").data(data).text(function(d){
@@ -252,7 +252,6 @@
 
 
 			timeImage=svg.select("#weatherImage").data(weatherData).attr("xlink:href", function(d){
-				console.log("sdfjks");
 				if ((d.cond == "Rain") || (d.cond == "Heavy Rain") || (d.cond == "Light Rain")){
 					return "rain.svg";
 				}
@@ -290,7 +289,7 @@
 
 
 		
-		plotLineGraph("#p", 1,2,2,2 );
+		plotLineGraph("#graph", 1,2,2,2 );
 		
 
 
@@ -312,7 +311,7 @@
 		var timeExtent = [];
 		var yExtent = [];
 
-		var length = 800;
+		var length = 700;
 		var svg =  d3.select(id).append("svg")
 			.attr("width", length)
 			.attr("height", length);
