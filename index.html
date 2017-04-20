@@ -526,68 +526,69 @@
 
 	function showLegend(){
 		var colors = ["red", "blue", "green", "yellow"];
-		var length = 600;
+		var length = 500;
 		var svgB =  d3.select("#p").append("svg")
 			.attr("width", length)
 			.attr("height", length)
-			.attr("transform", "translate(0, -600)");
+			.attr("transform", "translate(-30, -500)");
 
 		svgB.append("text")
             .attr("x", 150)
-            .attr("y", 265)
+            .attr("y", 65)
             .attr("font-size", 22)
             .text("Legend");
 
 		svgB.append("rect")
             .attr("x", 70)
-            .attr("y", 280)
+            .attr("y", 80)
             .attr("width", 20)
            	.attr("height", 20)
         	.style("fill", colors[0]);
         svgB.append("text")
             .attr("x", 100)
-            .attr("y", 295)
+            .attr("y", 95)
              .text("June 4, 2016 (Rainy Saturday)");
         
         svgB.append("rect")
             .attr("x", 70)
-            .attr("y", 310)
+            .attr("y", 110)
             .attr("width", 20)
             .attr("height", 20)
             .style("fill", colors[1])
             .style("fill-opacity", "0.5" );
          svgB.append("text")
             .attr("x", 100)
-            .attr("y", 325)
+            .attr("y", 125)
             .text("June 8, 2016 (Rainy Wednesday)");
 
           svgB.append("rect")
             .attr("x", 70)
-            .attr("y", 340)
+            .attr("y", 140)
             .attr("width", 20)
            	.attr("height", 20)
         	.style("fill", colors[2]);
         svgB.append("text")
             .attr("x", 100)
-            .attr("y", 355)
+            .attr("y", 155)
              .text("June 15, 2016 (Sunny Wednesday)");
         
         svgB.append("rect")
             .attr("x", 70)
-            .attr("y", 370)
+            .attr("y", 170)
             .attr("width", 20)
             .attr("height", 20)
             .style("fill", colors[3])
             .style("fill-opacity", "0.5" );
          svgB.append("text")
             .attr("x", 100)
-            .attr("y", 385)
+            .attr("y", 185)
             .text("June 18, 2016 (Sunny Saturday)");
          svgB.append("path")
             .attr("d", "M 60 220 L 60 420 L 400 420 L 400 220 Z" )
             .style("stroke" , "black")
             .style("fill" , "none")
-            .style("stroke-width" , "1");
+            .style("stroke-width" , "1")
+            .attr("transform", "translate(0, -200)");
 	}
 
 	//Returns the checked radio button
