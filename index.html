@@ -16,7 +16,7 @@
 		<input class="filter_button" name="dayChoice" id="o" value=1 type="radio">June 8, 2016 (Rainy Wednesday)</input><br>
 		<input class='filter_button' name="dayChoice" id='t' value=2 type='radio'>June 15, 2016 (Sunny Wednesday)</input><br>
 		<input class="filter_button" name="dayChoice" id="th" value=3 type="radio">June 18, 2016 (Sunny Saturday)</input><br>
-		Hover over a pick up location to learn more!
+		<p>Hover over a pick up location to learn more!</p>
 	</div>
 	<p id="p">
 	</p>
@@ -527,10 +527,10 @@
 	function showLegend(){
 		var colors = ["red", "blue", "green", "yellow"];
 		var length = 500;
-		var svgB =  d3.select("#p").append("svg")
+		var svgB =  d3.select("#input").append("svg").style("position", "absolute;")
 			.attr("width", length)
 			.attr("height", length)
-			.attr("transform", "translate(-30, -500)");
+			.attr("transform", "translate(-60, 30)");
 
 		svgB.append("text")
             .attr("x", 150)
