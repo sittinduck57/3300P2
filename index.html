@@ -32,6 +32,7 @@
    	var timeDict = {};
 	var weatherDict = {};
 	var weatherTimes = [];	
+	var count = 0;
 	
 	var parseTaxi = function(row){
 		
@@ -47,10 +48,9 @@
 	    dist = parseFloat(row.trip_distance);
 	    //console.log(new Date(dropTime));
 	  
-	  var obj = { dropLong: dropLong, dropLat: dropLat, dropTime: dropTime, dt:dt, pickLong: pickLong, pickLat: pickLat, pickTime: pickTime, pt:pt, fare: fare, dist: dist};
-      
-
-
+	  var obj = { dropLong: dropLong, dropLat: dropLat, dropTime: dropTime, dt:dt, pickLong: pickLong, pickLat: pickLat, pickTime: pickTime, pt:pt, fare: fare, dist: dist, id:count};
+	  count += 1;
+		
 	  var time = pickTime.split(' ')[1];
 	  var slots =  time.split(':');
 	  var tot = parseInt(slots[0])*60 + parseInt(slots[1]);
@@ -271,9 +271,7 @@
 			pickDots.exit().remove();
 			pickDots.enter().append("circle").attr("class", "pickups").attr("r", 4).style("fill", "red")
 			.attr("id", function(d){
-							var id = d.dt.getDate().toString()+ d.dropLong.toString()+ d.dropLat.toString() + d.pickLong.toString()+ d.pickLat.toString();
-							id = id.split("-").join("");
-							id = id.split(".").join("");
+							var id = d.id;
 							return 'pick'+id;
 						})
 			.attr("cx", function(d) { 
@@ -287,9 +285,7 @@
 				}
 			})
 			.on("mouseover", function(d){
-				var id = d.dt.getDate().toString()+ d.dropLong.toString()+ d.dropLat.toString() + d.pickLong.toString()+ d.pickLat.toString();
-				id = id.split("-").join("");
-				id = id.split(".").join("");
+				var id = d.id;
 				d3.selectAll(".pickups").style("opacity", .5);
 				d3.select("#pick"+id).style("opacity", 1);
 				d3.select("#drop"+id).style("opacity", 1);
@@ -298,9 +294,7 @@
 			})
 			.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px");})
 			.on("mouseout", function(d){	
-				var id = d.dt.getDate().toString()+ d.dropLong.toString()+ d.dropLat.toString() + d.pickLong.toString()+ d.pickLat.toString();
-				id = id.split("-").join("");
-				id = id.split(".").join("");
+				var id = d.id;
 				d3.select("#drop"+id).style("opacity", 0);
 				d3.selectAll(".line").style("opacity", 0);
 				d3.selectAll(".pickups").style("opacity", 1);
@@ -322,9 +316,7 @@
 					//}
 			})
 			.attr("id", function(d){
-				var id = d.dt.getDate().toString()+ d.dropLong.toString()+ d.dropLat.toString() + d.pickLong.toString()+ d.pickLat.toString();
-				id = id.split("-").join("");
-				id = id.split(".").join("");
+				var id = d.id;
 				return 'drop'+id;
 			})
 			.attr("transform", "translate(-200,200) rotate(-27)");
@@ -335,33 +327,23 @@
 			lines.exit().remove();
 			lines.enter().append("line").attr("class", "line").style("stroke", "yellow").style("opacity",0)
 			.attr("id", function(d){
-				var id = d.dt.getDate().toString()+ d.dropLong.toString()+ d.dropLat.toString() + d.pickLong.toString()+ d.pickLat.toString();
-				id = id.split("-").join("");
-				id = id.split(".").join("");
+				var id = d.id;
 				return "line"+id;
 			})
 		    .attr("x1", function(d){
-				var id = d.dt.getDate().toString()+ d.dropLong.toString()+ d.dropLat.toString() + d.pickLong.toString()+ d.pickLat.toString();
-				id = id.split("-").join("");
-				id = id.split(".").join("");
+				var id = d.id;
 				return d3.select("#pick"+id).attr("cx")
 			})
 		    .attr("y1", function(d){
-				var id = d.dt.getDate().toString()+ d.dropLong.toString()+ d.dropLat.toString() + d.pickLong.toString()+ d.pickLat.toString();
-				id = id.split("-").join("");
-				id = id.split(".").join("");
+				var id = d.id;
 				return d3.select("#pick"+id).attr("cy")
 			})
 		    .attr("x2", function(d){
-				var id = d.dt.getDate().toString()+ d.dropLong.toString()+ d.dropLat.toString() + d.pickLong.toString()+ d.pickLat.toString();
-				id = id.split("-").join("");
-				id = id.split(".").join("");
+				var id = d.id;
 				return d3.select("#drop"+id).attr("cx")
 			})
 		    .attr("y2", function(d){
-				var id = d.dt.getDate().toString()+ d.dropLong.toString()+ d.dropLat.toString() + d.pickLong.toString()+ d.pickLat.toString();
-				id = id.split("-").join("");
-				id = id.split(".").join("");
+				var id = d.id;
 				return d3.select("#drop"+id).attr("cy")
 			})
 			.attr("transform", "translate(-200,200) rotate(-27)");
