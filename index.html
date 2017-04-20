@@ -7,7 +7,7 @@
   <body>
   	<div class="filters" style="position:relative">
   		<label for="time">Time</label>
-		<input style="width: 300px;" type="range" id="time" min="0" value="0" max="1440" step="1"><br>
+		<input style="width: 300px;" type="range" id="time" min="0" value="0" max="1439" step="1"><br>
 		<input class="filter_button" name="dayChoice" id="z" value=0 type="radio" checked="checked">June 4, 2016 (Rainy Saturday)</input><br>
 		<input class="filter_button" name="dayChoice" id="o" value=1 type="radio">June 8, 2016 (Rainy Wednesday)</input><br>
 		<input class='filter_button' name="dayChoice" id='t' value=2 type='radio'>June 15, 2016 (Sunny Wednesday)</input><br>
@@ -27,7 +27,8 @@
 	
 	
    	var timeDict = {};
-	var weatherDict = {};	
+	var weatherDict = {};
+	var weatherTimes = [];	
 	
 	var parseTaxi = function(row){
 		
@@ -59,18 +60,22 @@
 	};
 	
 	var parseWeather = function(row){
-        time = new Date(row.Time);
+        wt = new Date(row.Time);
         temp = parseFloat(row.Temp);
-        events = parseFloat(row.Events);
-        cond = parseFloat(row.Conditions);
+        events = row.Events;
+        cond = row.Conditions;
         
 
-        var obj = { time: time, temp: temp, events: events, cond: cond };
+        var obj = { wt: wt, temp: temp, events: events, cond: cond };
 
    
-	  	var tot = time.getHours()*60 + time.getMinutes();
+	  	var tot = wt.getHours()*60 + wt.getMinutes();
+
+	  	if (!(tot in weatherTimes)){
+			weatherTimes.push(tot);
+	  	}
 	  
-	  	if (!(tot in timeDict)){
+	  	if (!(tot in weatherDict)){
 			weatherDict[tot] = [obj];
 	  	}else {
 		  	weatherDict[tot].push(obj);
@@ -86,14 +91,12 @@
 	  .defer(d3.csv, "June8Taxi.csv", parseTaxi)
 	  .defer(d3.csv, "June15Taxi.csv", parseTaxi)
 	  .defer(d3.csv, "June18Taxi.csv", parseTaxi)
-	  .defer(d3.csv, "June4Weather.csv", parseWeather)
-	  .defer(d3.csv, "June8Weather.csv", parseWeather)
-	  .defer(d3.csv, "June15Weather.csv", parseWeather)
 	  .defer(d3.csv, "Weather.csv", parseWeather)
 	  .await(function (error, nyc, taxi4, taxi8, taxi15, taxi18, weather ) {
 	    console.log("Code in the call-back function is only executed when every data file loads.");
 
 	    console.log(error);
+	    console.log(weatherTimes);
 
 		var svg = d3.select("#p").append("svg").attr("height",1100).attr("width",500);
 		
@@ -149,6 +152,14 @@
 		.attr("y", 140)
 		.style("font-size", "14pt")
 		.text("");
+
+		svg.append("svg:image")
+		.attr("id", "weatherImage")
+     	.attr('x',100)
+     	.attr('y',100)
+     	.attr('width', 100)
+     	.attr('height', 100)
+     	.attr("xlink:href", "clear.svg");
 		
 		var slide = d3.select("#time");
 		slide.on("input", function(){
@@ -178,17 +189,26 @@
 
 		function dropDots(t, day){
 			var data = timeDict[t]; 
+			var weatherData = weatherDict[t];
+
+			var u = closest(t, weatherTimes);
+			console.log(u);
+
 			if (day == 0){
 				data = timeDict[t].filter(function(d){return d.pt.getDate()==4});
+				weatherData = weatherDict[u].filter(function(d){return d.wt.getDate()==4});
 			}
 			else if (day == 1){
 				data = timeDict[t].filter(function(d){return d.pt.getDate()==8});
+				weatherData = weatherDict[u].filter(function(d){return d.wt.getDate()==8});
 			}
 			else if (day == 2){
 				data = timeDict[t].filter(function(d){return d.pt.getDate()==15});
+				weatherData = weatherDict[u].filter(function(d){return d.wt.getDate()==15});
 			}
 			else if (day == 3){
 				data = timeDict[t].filter(function(d){return d.pt.getDate()==18});
+				weatherData = weatherDict[u].filter(function(d){return d.wt.getDate()==18});
 			}
 			
 
@@ -230,6 +250,19 @@
 			});
 
 
+			timeImage=svg.select("weatherImage").data(weatherData).attr("xlink:href", function(d){
+				if ((d.cond == "Rain") || (d.cond == "Heavy Rain") || (d.cond == "Light Rain")){
+					return "rain.svg";
+				}
+				else if ((d.cond == "Clear")){
+					return "clear.svg";
+				}
+				else {
+					return "cloudy.svg";
+				}
+			});
+
+
 			var pickDots = svg.selectAll(".pickups").data(data);
 			pickDots.exit().remove();
 			pickDots.enter().append("circle").attr("class", "pickups").attr("r", 3).style("fill", "red")
@@ -256,6 +289,16 @@
 
 
 	  });
+
+	function closest(num, arr){
+    	var curr = 0
+    	for (i=0;i<arr.length;i++){
+    	    if (Math.abs(num - arr[i]) < Math.abs(num - arr[curr])){
+    	        curr = i;
+    	    }
+    	}
+    	return arr[curr];
+    }
 
 
 
