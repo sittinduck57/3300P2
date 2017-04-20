@@ -307,7 +307,7 @@
 				d3.select("#pick"+id).style("opacity", 1);
 				d3.select("#drop"+id).style("visibility", "visible");
 				d3.select("#line"+id).style("visibility", "visible");
-				return tooltip.style("visibility", "hidden").text("Trip Distance: " + d.dist +"mi Fare: $" + d.fare);
+				return tooltip.style("visibility", "visible").text("Trip Distance: " + d.dist +"mi Fare: $" + d.fare);
 			})
 			.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px");})
 			.on("mouseout", function(d){	
