@@ -27,7 +27,7 @@
 	
 	
    	var timeDict = {};
-	weatherArray=[];	
+	var weatherDict = {};	
 	
 	var parseTaxi = function(row){
 		
@@ -59,15 +59,25 @@
 	};
 	
 	var parseWeather = function(row){
-        date = parseFloat(row.DATE);
-        precip = parseFloat(row.PRCP);
-        tempAve = parseFloat(row.TAVG);
-        tempMax = parseFloat(row.TMAX);;
-        tempMin = parseFloat(row.TMIN);;
+        time = new Date(row.Time);
+        temp = parseFloat(row.Temp);
+        events = parseFloat(row.Events);
+        cond = parseFloat(row.Conditions);
+        
 
-        weatherArray.push({ date: date, precip: precip, tempAve: tempAve, 
-			tempMax: tempMax, tempMin: tempMin });
+        var obj = { time: time, temp: temp, events: events, cond: cond };
+
+   
+	  	var tot = time.getHours()*60 + time.getMinutes();
+	  
+	  	if (!(tot in timeDict)){
+			weatherDict[tot] = [obj];
+	  	}else {
+		  	weatherDict[tot].push(obj);
+	  	}
+
 	};
+
 		
       
 	  d3.queue()
@@ -76,8 +86,11 @@
 	  .defer(d3.csv, "June8Taxi.csv", parseTaxi)
 	  .defer(d3.csv, "June15Taxi.csv", parseTaxi)
 	  .defer(d3.csv, "June18Taxi.csv", parseTaxi)
-	  .defer(d3.csv, "WeatherData.csv", parseWeather)
-	  .await(function (error, nyc, taxi5, taxi8, taxi12, taxi15, weather) {
+	  .defer(d3.csv, "June4Weather.csv", parseWeather)
+	  .defer(d3.csv, "June8Weather.csv", parseWeather)
+	  .defer(d3.csv, "June15Weather.csv", parseWeather)
+	  .defer(d3.csv, "Weather.csv", parseWeather)
+	  .await(function (error, nyc, taxi4, taxi8, taxi15, taxi18, weather ) {
 	    console.log("Code in the call-back function is only executed when every data file loads.");
 
 	    console.log(error);
