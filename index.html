@@ -117,21 +117,24 @@
 		.attr("fill","#5f9ea0");
 
 
-		//Tooltip element for hover feature
-
-		var tooltip = d3.select("body")
-			.append("div")
-			.attr("id", "tooltip")
-			.attr("x", 310)
-			.attr("y", 200)
-			.style("z-index", "10")
-			.style("visibility", "hidden")
-			.text("");
-
 
 		var timeAndDateText=d3.select("#p")
 		.append("div")
 		.attr("id", "daytime")
+		.text("");
+
+		svg.append("text")
+		.attr("id", "tiptool1")
+		.attr("x", 310)
+		.attr("y", 200)
+		.style("font-size", "14pt")
+		.text("");
+
+		svg.append("text")
+		.attr("id", "tiptool2")
+		.attr("x", 310)
+		.attr("y", 220)
+		.style("font-size", "14pt")
 		.text("");
 
 		svg.append("text")
@@ -308,7 +311,8 @@
 				d3.select("#pick"+id).style("opacity", 1);
 				d3.select("#drop"+id).style("visibility", "visible");
 				d3.select("#line"+id).style("visibility", "visible");
-				return tooltip.style("visibility", "visible").text("Trip Distance: " + d.dist +"mi Fare: $" + d.fare);
+				svg.select("#tiptool1").style("visibility", "visible").text("Trip Distance: " + d.dist +" mi");
+				svg.select("#tiptool2").style("visibility", "visible").text("Fare: $" + d.fare);
 			})
 			.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px");})
 			.on("mouseout", function(d){	
@@ -316,7 +320,8 @@
 				d3.select("#drop"+id).style("visibility", "hidden");
 				d3.selectAll(".line").style("visibility", "hidden");
 				d3.selectAll(".pickups").style("opacity", 1);
-				return tooltip.style("visibility", "hidden");})
+				svg.select("#tiptool1").style("visibility", "hidden");
+				svg.select("#tiptool2").style("visibility", "hidden");})
 			.attr("transform", "translate(-200,200) rotate(-27)");
 			
 			
@@ -414,11 +419,7 @@
 		for (var j = 0; j < dates.length; j++) {
 			day = data[dates[j]]
 			count = 0;
-<<<<<<< HEAD
-        	//for (var i = 0; i < day.length; i+=300) {
-=======
-        	//for (var i = 0; i < day.length; i++) {
->>>>>>> 6acaeace164e71648d0dd54bd1409aac66e0d197
+
 	        	var line = d3.line()
 	                //.curve(d3.curveCatmullRom.alpha(0.5))
 	                .x(function (d) { return x(d.minute); })
@@ -435,16 +436,14 @@
 	               .style("fill", 'none')
 	               .style("stroke", colors[j]);      
 
-	        //};
-
 		};
-		// svg.selectAll('.x.axis text')
-  //  			.text(function(d) { 
-		//        d = d.toFixed();
-		//        var hours = Math.floor(d / 60);
-		//        var minutes = pad((d % 60), 2);
-		//        return hours + ":" + minutes;
-		//    	});
+		svg.selectAll('.x.axis text')
+   			.text(function(d) { 
+		       d = d.toFixed();
+		       var hours = Math.floor(d / 60);
+		       var minutes = pad((d % 60), 2);
+		       return hours + ":" + minutes;
+		   	});
 		
 		svg.append("text")
 			.text(title)
