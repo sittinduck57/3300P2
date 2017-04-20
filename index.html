@@ -29,7 +29,10 @@
     <script>
 	
 	
-   	var timeDict = {};
+   	var timeDict4 = {};
+   	var timeDict8 = {};
+   	var timeDict15 = {};
+   	var timeDict18 = {};
 	var weatherDict = {};
 	var weatherTimes = [];	
 	var count = 0;
@@ -41,25 +44,49 @@
 	    dropTime = row.dropoff_datetime;
 	    dt = new Date(dropTime);
 	    pickLong = parseFloat(row.pickup_longitude);
-	    pickLat = parseFloat(row.pickup_latitude);
+	   	pickLat = parseFloat(row.pickup_latitude);
 	    pickTime = row.pickup_datetime;
 	    pt = new Date(pickTime);
 	    fare = parseFloat(row.payment_amount);
 	    dist = parseFloat(row.trip_distance);
 	    //console.log(new Date(dropTime));
-	  
-	  var obj = { dropLong: dropLong, dropLat: dropLat, dropTime: dropTime, dt:dt, pickLong: pickLong, pickLat: pickLat, pickTime: pickTime, pt:pt, fare: fare, dist: dist, id:count};
-	  count += 1;
-		
-	  var time = pickTime.split(' ')[1];
-	  var slots =  time.split(':');
-	  var tot = parseInt(slots[0])*60 + parseInt(slots[1]);
-	  
-	  if (!(tot in timeDict)){
-		  timeDict[tot] = [obj];
-	  }else {
-		  timeDict[tot].push(obj);
-	  }
+	    	  
+	    	  var obj = { dropLong: dropLong, dropLat: dropLat, dropTime: dropTime, dt:dt, pickLong: pickLong, pickLat: pickLat, pickTime: pickTime, pt:pt, fare: fare, dist: dist, id:count};
+	    	  count += 1;
+	    	
+	    	  var day = pt.getDate();
+	    	  var time = pickTime.split(' ')[1];
+	    	  var slots =  time.split(':');
+	    	  var tot = parseInt(slots[0])*60 + parseInt(slots[1]);
+	    	  if (day == 4){
+	    		if (!(tot in timeDict4)){
+		  			timeDict4[tot] = [obj];
+	  			}else {
+		  			timeDict4[tot].push(obj);
+	  			}
+	    	  }
+	    	  else if (day == 8){
+	    	  	if (!(tot in timeDict8)){
+		  			timeDict8[tot] = [obj];
+	  			}else {
+		  			timeDict8[tot].push(obj);
+	  			}
+	    	  }
+	    	  else if (day == 15){
+	    	  		if (!(tot in timeDict15)){
+		  				timeDict15[tot] = [obj];
+	  				}else {
+		  				timeDict15[tot].push(obj);
+	  				}
+	    	  }
+	    	  else if(day == 18) {
+	  			if (!(tot in timeDict18)){
+		  			timeDict18[tot] = [obj];
+	  			}else {
+		  			timeDict18[tot].push(obj);
+	  			}
+  			}
+		}	 
 	};
 	
 	var parseWeather = function(row){
@@ -189,25 +216,25 @@
 		});
 
 		function dropDots(t, day){
-			var data = timeDict[t]; 
+			var data;
 			var weatherData = weatherDict[t];
 
 			var u = closest(t, weatherTimes);
 
 			if (day == 0){
-				data = timeDict[t].filter(function(d){return d.pt.getDate()==4});
+				data = timeDict4[t];
 				weatherData = weatherDict[u].filter(function(d){return d.wt.getDate()==4});
 			}
 			else if (day == 1){
-				data = timeDict[t].filter(function(d){return d.pt.getDate()==8});
+				data = timeDict8[t];
 				weatherData = weatherDict[u].filter(function(d){return d.wt.getDate()==8});
 			}
 			else if (day == 2){
-				data = timeDict[t].filter(function(d){return d.pt.getDate()==15});
+				data = timeDict15[t];
 				weatherData = weatherDict[u].filter(function(d){return d.wt.getDate()==15});
 			}
 			else if (day == 3){
-				data = timeDict[t].filter(function(d){return d.pt.getDate()==18});
+				data = timeDict18[t];
 				weatherData = weatherDict[u].filter(function(d){return d.wt.getDate()==18});
 			}
 			
