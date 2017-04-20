@@ -118,25 +118,6 @@
 		.attr("fill","#5f9ea0");
 
 
-<<<<<<< HEAD
-		//Tooltip element for hover feature
-
-		// var tooltip = d3.select("body")
-// 			.append("div")
-// 			.attr("id", "tooltip")
-// 			.style("position", "absolute")
-// 			.style("z-index", "10")
-// 			.style("visibility", "hidden")
-// 			.text("");
-//
-		var tooltip = svg.append("div")
-		.attr("id", "tooltip")
-		.attr("x", 310)
-		.attr("y", 100);
-		
-		
-		tooltip.append("p")
-=======
 
 		var timeAndDateText=d3.select("#p")
 		.append("div")
@@ -158,21 +139,20 @@
 		.text("");
 
 		svg.append("text")
->>>>>>> 65c5b90ccaa995c297a6e4dea494fb8fe05533b8
 		.attr("id", "dateAndTime1")
 		.attr("x", 310)
 		.attr("y", 100)
 		.style("font-size", "14pt")
 		.text("Use the Slider!");
 
-		tooltip.append("p")
+		svg.append("text")
 		.attr("id", "dateAndTime2")
 		.attr("x", 310)
 		.attr("y", 120)
 		.style("font-size", "14pt")
 		.text("");
 
-		tooltip.append("p")
+		svg.append("text")
 		.attr("id", "dateAndTime3")
 		.attr("x", 310)
 		.attr("y", 140)
