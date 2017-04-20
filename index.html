@@ -119,35 +119,35 @@
 
 		//Tooltip element for hover feature
 
-		var tooltip = d3.select("body")
-			.append("div")
-			.attr("id", "tooltip")
-			.style("position", "absolute")
-			.style("z-index", "10")
-			.style("visibility", "hidden")
-			.text("");
-
-
-		var timeAndDateText=d3.select("#p")
-		.append("div")
-		.attr("id", "daytime")
-		.text("");
-
-		svg.append("text")
+		// var tooltip = d3.select("body")
+// 			.append("div")
+// 			.attr("id", "tooltip")
+// 			.style("position", "absolute")
+// 			.style("z-index", "10")
+// 			.style("visibility", "hidden")
+// 			.text("");
+//
+		var tooltip = svg.append("div")
+		.attr("id", "tooltip")
+		.attr("x", 310)
+		.attr("y", 100);
+		
+		
+		tooltip.append("p")
 		.attr("id", "dateAndTime1")
 		.attr("x", 310)
 		.attr("y", 100)
 		.style("font-size", "14pt")
 		.text("Use the Slider!");
 
-		svg.append("text")
+		tooltip.append("p")
 		.attr("id", "dateAndTime2")
 		.attr("x", 310)
 		.attr("y", 120)
 		.style("font-size", "14pt")
 		.text("");
 
-		svg.append("text")
+		tooltip.append("p")
 		.attr("id", "dateAndTime3")
 		.attr("x", 310)
 		.attr("y", 140)
@@ -307,22 +307,21 @@
 				d3.select("#pick"+id).style("opacity", 1);
 				d3.select("#drop"+id).style("visibility", "visible");
 				d3.select("#line"+id).style("visibility", "visible");
-				return tooltip.style("visibility", "visible").text("Trip Distance: " + d.dist +"mi Fare: $" + d.fare);
+				return d3.select("#tool").style("visibility", "visible").text("Trip Distance: " + d.dist +"mi Fare: $" + d.fare);
 			})
-			.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px");})
 			.on("mouseout", function(d){	
 				var id = d.id;
 				d3.select("#drop"+id).style("visibility", "hidden");
-				d3.selectAll(".line").style("visibility", "hidden");
+				d3.selectAll(".linePath").style("visibility", "hidden");
 				d3.selectAll(".pickups").style("opacity", 1);
-				return tooltip.style("visibility", "hidden");})
+				return d3.select("#tool").style("visibility", "hidden");})
 			.attr("transform", "translate(-200,200) rotate(-27)");
 			
 			
 			
-			var lines = svg.selectAll(".line").data(data);
+			var lines = svg.selectAll(".linePath").data(data);
 			lines.remove();
-			lines.enter().append("line").attr("class", "line").style("stroke", "yellow").style("visibility", "hidden")
+			lines.enter().append("line").attr("class", "linePath").style("stroke", "yellow").style("visibility", "hidden")
 			.attr("id", function(d){
 				var id = d.id;
 				return "line"+id;
