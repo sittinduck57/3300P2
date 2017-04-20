@@ -16,6 +16,7 @@
 		<input class="filter_button" name="dayChoice" id="o" value=1 type="radio">June 8, 2016 (Rainy Wednesday)</input><br>
 		<input class='filter_button' name="dayChoice" id='t' value=2 type='radio'>June 15, 2016 (Sunny Wednesday)</input><br>
 		<input class="filter_button" name="dayChoice" id="th" value=3 type="radio">June 18, 2016 (Sunny Saturday)</input><br>
+		Hover over a pick up location to learn more!
 	</div>
 	<p id="p">
 	</p>
@@ -332,7 +333,7 @@
 				d3.select("#drop"+id).style("visibility", "visible");
 				d3.select("#line"+id).style("visibility", "visible");
 				svg.select("#tiptool1").style("visibility", "visible").text("Trip Distance: " + d.dist +" mi");
-				svg.select("#tiptool2").style("visibility", "visible").text("Fare: $" + d.fare);
+				svg.select("#tiptool2").style("visibility", "visible").text("Fare: $" + d.fare.toFixed(2));
 			})
 			.on("mouseout", function(d){	
 				var id = d.id;
@@ -389,9 +390,13 @@
 		
 		d3.queue()
 		.defer(plotLineGraph, "#p", nestedData, "numRides", "# of Rides" , "Number of Rides by Time of Day")
-		.defer(plotLineGraph, "#p", nestedData, "avgFare", "Average Fare" , "Average Fare Paid by Time of Day" )
-		.defer(plotLineGraph, "#p", nestedData, "avgDist", "Average Distance" , "Average Distance Traveled by Time of Day")
+		.defer(plotLineGraph, "#p", nestedData, "avgFare", "Average Fare (Dollars)" , "Average Fare Paid by Time of Day" )
+		.defer(plotLineGraph, "#p", nestedData, "avgDist", "Average Distance (Miles)" , "Average Distance Traveled by Time of Day")
 		.await(function (error, one, two, three) {});
+
+		showLegend();
+
+		
 		
 	  });
 
@@ -456,7 +461,7 @@
 	               .style("stroke", colors[j]);      
 
 		};
-		svg.selectAll('.x.axis text')
+		svg.selectAll('.xaxis text')
    			.text(function(d) { 
 		       d = d.toFixed();
 		       var hours = Math.floor(d / 60);
@@ -467,10 +472,10 @@
 		svg.append("text")
 			.text(title)
 			.attr("x", length/2)
-			.attr("y", 15)
+			.attr("y", 50)
 			.attr("text-anchor", "middle")
 			.attr("font-family", "Palatino")
-			.attr("font-size", 14)
+			.attr("font-size", 20)
 			.attr("fill", "black");
 
 		svg.append("text")
@@ -479,7 +484,7 @@
 			.attr("y", length/2 - 20)
 			.attr("text-anchor", "middle")
 			.attr("font-family", "Palatino")
-			.attr("font-size", 12)
+			.attr("font-size", 16)
 			.attr("transform", "rotate(-90) translate(-200, -250)")
 			.attr("fill", "black");
 		
@@ -489,12 +494,78 @@
 			.attr("y", length-10)
 			.attr("text-anchor", "end")
 			.attr("font-family", "Palatino")
-			.attr("font-size", 12)
+			.attr("font-size", 16)
 			.attr("fill", "black");
+
 	    
 		callback(null);
 
 
+	}
+
+	function showLegend(){
+		var colors = ["red", "blue", "green", "yellow"];
+		var length = 600;
+		var svgB =  d3.select("#p").append("svg")
+			.attr("width", length)
+			.attr("height", length);
+		
+		svgB.append("text")
+            .attr("x", 150)
+            .attr("y", 265)
+            .attr("font-size", 22)
+            .text("Legend");
+
+		svgB.append("rect")
+            .attr("x", 70)
+            .attr("y", 280)
+            .attr("width", 20)
+           	.attr("height", 20)
+        	.style("fill", colors[0]);
+        svgB.append("text")
+            .attr("x", 100)
+            .attr("y", 295)
+             .text("June 4, 2016 (Rainy Saturday)");
+        
+        svgB.append("rect")
+            .attr("x", 70)
+            .attr("y", 310)
+            .attr("width", 20)
+            .attr("height", 20)
+            .style("fill", colors[1])
+            .style("fill-opacity", "0.5" );
+         svgB.append("text")
+            .attr("x", 100)
+            .attr("y", 325)
+            .text("June 8, 2016 (Rainy Wednesday)");
+
+          svgB.append("rect")
+            .attr("x", 70)
+            .attr("y", 340)
+            .attr("width", 20)
+           	.attr("height", 20)
+        	.style("fill", colors[2]);
+        svgB.append("text")
+            .attr("x", 100)
+            .attr("y", 355)
+             .text("June 15, 2016 (Sunny Wednesday)");
+        
+        svgB.append("rect")
+            .attr("x", 70)
+            .attr("y", 370)
+            .attr("width", 20)
+            .attr("height", 20)
+            .style("fill", colors[3])
+            .style("fill-opacity", "0.5" );
+         svgB.append("text")
+            .attr("x", 100)
+            .attr("y", 385)
+            .text("June 18, 2016 (Sunny Saturday)");
+         svgB.append("path")
+            .attr("d", "M 60 220 L 60 420 L 400 420 L 400 220 Z" )
+            .style("stroke" , "black")
+            .style("fill" , "none")
+            .style("stroke-width" , "1");
 	}
 
 	//Returns the checked radio button
