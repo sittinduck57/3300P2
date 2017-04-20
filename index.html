@@ -211,6 +211,7 @@
 				weatherData = weatherDict[u].filter(function(d){return d.wt.getDate()==18});
 			}
 			
+			console.log(weatherData);
 
 
 			timeText=svg.select("#dateAndTime1").data(data).text(function(d){
@@ -250,7 +251,8 @@
 			});
 
 
-			timeImage=svg.select("weatherImage").data(weatherData).attr("xlink:href", function(d){
+			timeImage=svg.select("#weatherImage").data(weatherData).attr("xlink:href", function(d){
+				console.log("sdfjks");
 				if ((d.cond == "Rain") || (d.cond == "Heavy Rain") || (d.cond == "Light Rain")){
 					return "rain.svg";
 				}
