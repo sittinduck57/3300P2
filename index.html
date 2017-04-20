@@ -193,7 +193,6 @@
 		slide.on("input", function(){
 			t = this.value;
 			dropDots(t, getCheckedButton("filter_button")[0]);
-
 		});
 
 		var check1 = d3.select("#z");
@@ -238,8 +237,6 @@
 				weatherData = weatherDict[u].filter(function(d){return d.wt.getDate()==18});
 			}
 			
-
-
 			timeText=svg.select("#dateAndTime1").data(data).text(function(d){
 				var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 				return days[d.pt.getDay()] + ", ";
@@ -294,8 +291,28 @@
 			});
 
 
+			var tempDots = svg.selectAll(".drops").data(data);
+			tempDots.remove();
+			tempDots.enter().append("circle").attr("class", "drops").attr("r", 4).style("fill", "blue").style("visibility", "hidden")
+			.attr("cx", function(d) {
+				//if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443) && (d.dropLat < -76.50437318*d.dropLong-5615.435765) && (d.pickLat > 1.895121486*d.pickLong+180.9002959) && (d.pickLat > .0550037105*d.pickLong+44.77000868) &&  (d.pickLat < -76.50437318*d.pickLong-5615.435765) && (d.pickLat < 1.547301526*d.pickLong+155.2683443)){
+					return projection([d.dropLong,d.dropLat])[0];
+					//}
+			})
+			.attr("cy", function(d) {
+				//if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443) &&  (d.dropLat < -76.50437318*d.dropLong-5615.435765) && (d.pickLat > 1.895121486*d.pickLong+180.9002959) && (d.pickLat > .0550037105*d.pickLong+44.77000868) && (d.pickLat < -76.50437318*d.pickLong-5615.435765) && (d.pickLat < 1.547301526*d.pickLong+155.2683443)){
+					return projection([d.dropLong,d.dropLat])[1];
+					//}
+			})
+			.attr("id", function(d){
+				var id = d.id;
+				return 'drop'+id;
+			})
+			.attr("transform", "translate(-200,200) rotate(-27)");
+			
+
 			var pickDots = svg.selectAll(".pickups").data(data);
-			pickDots.exit().remove();
+			pickDots.remove();
 			pickDots.enter().append("circle").attr("class", "pickups").attr("r", 4).style("fill", "red")
 			.attr("id", function(d){
 							var id = d.id;
@@ -315,44 +332,24 @@
 				var id = d.id;
 				d3.selectAll(".pickups").style("opacity", .5);
 				d3.select("#pick"+id).style("opacity", 1);
-				d3.select("#drop"+id).style("opacity", 1);
-				d3.select("#line"+id).style("opacity", 1);
+				d3.select("#drop"+id).style("visibility", "visible");
+				d3.select("#line"+id).style("visibility", "visible");
 				return tooltip.style("visibility", "hidden").text("Trip Distance: " + d.dist +"mi Fare: $" + d.fare);
 			})
 			.on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left", (event.pageX+10)+"px");})
 			.on("mouseout", function(d){	
 				var id = d.id;
-				d3.select("#drop"+id).style("opacity", 0);
-				d3.selectAll(".line").style("opacity", 0);
+				d3.select("#drop"+id).style("visibility", "hidden");
+				d3.selectAll(".line").style("visibility", "hidden");
 				d3.selectAll(".pickups").style("opacity", 1);
 				return tooltip.style("visibility", "hidden");})
 			.attr("transform", "translate(-200,200) rotate(-27)");
 			
 			
-			var tempDots = svg.selectAll(".drops").data(data);
-			tempDots.exit().remove();
-			tempDots.enter().append("circle").attr("class", "drops").attr("r", 4).style("fill", "blue").style("opacity",0)
-			.attr("cx", function(d) { 
-				//if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443) && (d.dropLat < -76.50437318*d.dropLong-5615.435765) && (d.pickLat > 1.895121486*d.pickLong+180.9002959) && (d.pickLat > .0550037105*d.pickLong+44.77000868) &&  (d.pickLat < -76.50437318*d.pickLong-5615.435765) && (d.pickLat < 1.547301526*d.pickLong+155.2683443)){
-					return projection([d.dropLong,d.dropLat])[0];
-					//}
-			})
-			.attr("cy", function(d) { 
-				//if ((d.dropLat > 1.895121486*d.dropLong+180.9002959) && (d.dropLat > .0550037105*d.dropLong+44.77000868) && (d.dropLat < 1.547301526*d.dropLong+155.2683443) &&  (d.dropLat < -76.50437318*d.dropLong-5615.435765) && (d.pickLat > 1.895121486*d.pickLong+180.9002959) && (d.pickLat > .0550037105*d.pickLong+44.77000868) && (d.pickLat < -76.50437318*d.pickLong-5615.435765) && (d.pickLat < 1.547301526*d.pickLong+155.2683443)){
-					return projection([d.dropLong,d.dropLat])[1];
-					//}
-			})
-			.attr("id", function(d){
-				var id = d.id;
-				return 'drop'+id;
-			})
-			.attr("transform", "translate(-200,200) rotate(-27)");
-			
-			
 			
 			var lines = svg.selectAll(".line").data(data);
-			lines.exit().remove();
-			lines.enter().append("line").attr("class", "line").style("stroke", "yellow").style("opacity",0)
+			lines.remove();
+			lines.enter().append("line").attr("class", "line").style("stroke", "yellow").style("visibility", "hidden")
 			.attr("id", function(d){
 				var id = d.id;
 				return "line"+id;
@@ -379,8 +376,25 @@
 
 
 		
-		plotLineGraph("#graph", 1,2,2,2 );
+		var dates = [4,8,15,18];
+		var nestedData = {4: {}, 8: {}, 15: {}, 18: {}}; 
+		for (var j = 0; j < dates.length; j++) {
+			var element = [];
+			for (var i = 0; i < 1440; i++) {
+				var row = (timeDict[i].filter(function(d){return d.pt.getDate()==dates[j]}));
+				element.push({"day":dates[j], "minute": i,"numRides": row.length, "avgFare": d3.mean(row.map(function(d){return d.fare})), 
+					"avgDist": d3.mean(row.map(function(d){return d.dist}))});
+			};
+			nestedData[dates[j]] = element;
+
+		};
+
+		plotLineGraph("#p", nestedData, "numRides", "# of Rides" , "Number of Rides by Time of Day" );
+		plotLineGraph("#p", nestedData, "avgFare", "Average Fare" , "Average Fare Paid by Time of Day" );
+		plotLineGraph("#p", nestedData, "avgDist", "Average Distance" , "Average Distance Traveled by Time of Day" );
 		
+
+
 
 
 	  });
@@ -397,17 +411,22 @@
 
 
 
-	function plotLineGraph(id, data, yfield, ylabel, title){
-		var timeExtent = [];
-		var yExtent = [];
+	function plotLineGraph(id, data, yfield, ylabel, title){	
+		var colors = ["red", "blue", "green", "yellow"];
+		var timeExtent = [0,1440];
+		var yExtent;
+		if (yfield == "numRides"){yExtent = [0,700];}
+		else if (yfield == "avgFare"){yExtent = [0,40];}
+		else if (yfield == "avgDist"){yExtent = [0,13];}
+					
 
-		var length = 700;
+		var length = 600;
 		var svg =  d3.select(id).append("svg")
 			.attr("width", length)
 			.attr("height", length);
 		var padding = length/10;
 
-		var x = d3.scaleTime()
+		var x = d3.scaleLinear()
     		.domain(timeExtent).range([padding, length-padding]);
     	var y = d3.scaleLinear()
     		.domain(yExtent).range([length-padding, padding]);
@@ -418,29 +437,40 @@
 		var plot = svg.append("g").attr("transform", "translate(0,0)");
 		plot.append("g").call(xAxis).attr("transform", "translate(0," + (length-padding).toString()+ ")");
 		plot.append("g").call(yAxis).attr("transform", "translate(" + padding.toString() +",0)");
-		// var pathGenerator = d3.line()
-		// 	.x(function (d) { return x(d.Date); })
-		// 	.y(function (d) { return y(d.yfield); });
 
-		// var paths = plot.selectAll("path.lineGraph").data(data);
-		// paths.enter().append("path")
-		// 	.merge(paths)
-		// 	// .on("mouseover", function(d){ 
-		// 	// 	svg.select("#SectorName").text(d.key);
-		// 	// })
-		// 	.attr("class", "lineGraph")
-		// 	.transition().duration(1000)
-		// 	.attr("d", function(sector){ 
-		// 		return pathGenerator(sector.values);
-		// 	})
+		var dates = [4,8,15,18];
+		for (var j = 0; j < dates.length; j++) {
+			day = data[dates[j]]
+			count = 0;
+        	for (var i = 0; i < day.length; i++) {
+	        	var line = d3.line()
+	                //.curve(d3.curveCatmullRom.alpha(0.5))
+	                .x(function (d) { return x(d.minute); })
+					.y(function (d) {if (yfield == "numRides"){
+										return y(d.numRides);}
+									if (yfield == "avgFare"){
+										return y(d.avgFare);}
+									if (yfield == "avgDist"){
+										return y(d.avgDist);}});
+					
+	            svg.append("path")
+	               .attr("class", "line")
+	               .attr("d", line(day))
+	               .style("fill", 'none')
+	               .style("stroke", colors[j]);      
+	        };
 
-		// 	.style("stroke", function(sector, i){ 
-		// 		return "blue";
-		// 	})
-
-		// Append Titles and Axis Labels
+		};
+		svg.selectAll('.x.axis text')
+   			.text(function(d) { 
+		       d = d.toFixed();
+		       var hours = Math.floor(d / 60);
+		       var minutes = pad((d % 60), 2);
+		       return hours + ":" + minutes;
+		   	});
+		
 		svg.append("text")
-			.text("Histogram")
+			.text(title)
 			.attr("x", length/2)
 			.attr("y", 15)
 			.attr("text-anchor", "middle")
@@ -449,22 +479,24 @@
 			.attr("fill", "black");
 
 		svg.append("text")
-			.text("Fr.")
+			.text(ylabel)
 			.attr("x", 5)
 			.attr("y", length/2)
 			.attr("text-anchor", "start")
 			.attr("font-family", "Palatino")
 			.attr("font-size", 12)
+			.attr("transform", "rotate(-85) translate(-400, -250)")
 			.attr("fill", "black");
 		
 		svg.append("text")
-			.text("Value")
+			.text("Time in Minutes")
 			.attr("x", length/2)
 			.attr("y", length-10)
 			.attr("text-anchor", "end")
 			.attr("font-family", "Palatino")
 			.attr("font-size", 12)
 			.attr("fill", "black");
+
 
 
 	}
@@ -480,13 +512,6 @@
 	        var val = d3.select(checkboxes[i]).attr("value");
 	        checkboxesChecked.push(parseInt(val));
 	     }
-	  }
-	  if (checkboxesChecked.length == 1 && checkboxesChecked[0] == '50'){
-	  	checkboxesChecked = [];
-	  	for (var i = 0; i < 50; i++) {
-	  		checkboxesChecked.push(i);
-	  	}
-	  	//console.log(checkboxesChecked);
 	  }
 	  // Return the array if it is non-empty, or null
 	  return checkboxesChecked.length > 0 ? checkboxesChecked : null;
