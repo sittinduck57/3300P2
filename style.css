@@ -2,6 +2,11 @@
     text-align: center;
 }
 
+body{
+     background-color:#FFFFCC;
+
+
+}
 
 #tooltip {
     position: absolute;
@@ -13,9 +18,11 @@
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
     pointer-events: none;
 }
+
 #tooltip.hidden {
     display: none;
 }
+
 #tooltip p {
     margin: 0;
     font-family: sans-serif;
@@ -37,7 +44,6 @@
     position: absolute;
     top:100px;
     right: 100px;
-    width: 800px;
     padding: 10px;
 
 }
